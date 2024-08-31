@@ -10,9 +10,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/rsocket-core": "^0.0.11",
+    "@types/rsocket-websocket-client": "^0.0.7",
+    "@types/ws": "^8.5.12",
     "antd": "^5.19.1",
+    "buffer": "^6.0.3",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.1",
+    "rsocket-core": "^0.0.29-alpha.0",
+    "rsocket-flowable": "^0.0.29-alpha.0",
+    "rsocket-types": "^0.0.29-alpha.0",
+    "rsocket-websocket-client": "^0.0.29-alpha.0",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

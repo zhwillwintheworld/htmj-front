@@ -1,0 +1,134 @@
+.mahjong-table {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-color: #004d40;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.player-area {
+    position: absolute;
+    display: flex;
+}
+
+.top {
+    width: 50vw;
+    height: 25vh;
+    top: 10px;
+    left: 25%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.left {
+    width: 25vw;
+    height: 50vh;
+    left: 10px;
+    top: 25%;
+    flex-direction:row ;
+    justify-content: center;
+    align-items: center;
+}
+
+.right {
+    width: 25vw;
+    height: 50vh;
+    right: 10px;
+    top: 25%;
+    flex-direction: row-reverse;
+    justify-content: center;
+    align-items: center;
+}
+
+.bottom {
+    width: 50vw;
+    bottom: 10px;
+    left: 25%;
+    flex-direction: column-reverse;
+    justify-content: center;
+    align-items: center;
+}
+
+.center-area {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background-color: #00796b;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.game-info {
+    font-size: 24px;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.tile-row {
+    display: flex;
+}
+
+.tile-row.horizontal {
+    flex-direction: row;
+    margin-top: 10px;
+}
+
+.tile-row.verticalLeft {
+    flex-direction: row;
+    transform: rotate(90deg);
+    margin-right: 25px;
+}
+
+.tile-row.verticalRight {
+    flex-direction: row;
+    transform: rotate(-90deg);
+    margin-left: 25px;
+}
+
+
+.tile {
+    width: 40px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ccc;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+    transition: background-color 0.3s;
+}
+
+.tile.hand {
+    background-color: mediumslateblue;
+}
+
+.tile.discarded {
+    background-color: #bdbdbd;
+    cursor: default;
+}
+
+.tile.pung {
+    background-color: #ffeb3b;
+    cursor: default;
+}
+
+.tile:hover {
+    background-color: #e0f7fa;
+}
+
+.tile:active {
+    background-color: #b2ebf2;
+}
+
+.play-button:hover {
+    background-color: #00695c;
+    border-color: #004d40;
+}
