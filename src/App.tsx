@@ -1,6 +1,11 @@
-import Dashboard from "./component/Dashboard.tsx";
 import {useLocation} from 'react-router-dom';
-import { useRef } from 'react';
+import {useRef} from 'react';
+import Dashboard from "./component/Dashboard.tsx";
+import {
+    ClientRequest, ServerMessageType, MahjongMessageType,
+    MahjongMessageEvent, Position, UserType,
+    PLATFORM, CommunicateType,
+} from './domain/Task.ts'
 
 import {
     RSocketClient,
@@ -26,19 +31,80 @@ const dataMimeType = 'application/json';
 const metadataMimeType = MESSAGE_RSOCKET_COMPOSITE_METADATA.string;
 const route = 'im.v1.setup';
 
+const makeTaskPayload = (clientRequest: ClientRequest): Payload<Buffer, Buffer> => {
+    return {
+        data: Buffer.from(JSON.stringify(clientRequest)),
+        metadata: encodeCompositeMetadata([
+            [MESSAGE_RSOCKET_ROUTING, encodeRoute("im.v1.task")],
+        ]),
+    }
+}
+
+const makeTaskInitMessage = (userCode: string, token: string): ClientRequest => {
+    return {
+        traceId: new Date().valueOf() + "",
+        createTime: new Date().valueOf(),
+        userCode,
+        token,
+        platform: PLATFORM.WEB,
+        communicateType: CommunicateType.ROOM,
+        communicateUserCode: '',
+        communicateRoomCode: '1',
+        communicateGroupCode: '',
+        message: {
+            messageType: ServerMessageType.MAHJONG,
+            messageContent: {
+                type: MahjongMessageType.REQUEST,
+                event: MahjongMessageEvent.INIT_REQUEST,
+                content: {
+                    roomId: '1',
+                    seatInfo: {
+                        east: {
+                            userCode: '1',
+                            userName: '',
+                            nickName: '',
+                            avatar: '',
+                            userType: UserType.MANAGER
+                        },
+                        south: {
+                            userCode: '2',
+                            userName: '',
+                            nickName: '',
+                            avatar: '',
+                            userType: UserType.MANAGER
+                        },
+                        west: {
+                            userCode: '3',
+                            userName: '',
+                            nickName: '',
+                            avatar: '',
+                            userType: UserType.MANAGER
+                        },
+                        north: {
+                            userCode: '4',
+                            userName: '',
+                            nickName: '',
+                            avatar: '',
+                            userType: UserType.MANAGER
+                        },
+                        openUser: Position.EAST
+                    },
+                    tableId: '1'
+                }
+            }
+        }
+    }
+}
+
 
 function App() {
-    const subscriberRef = useRef<ISubscriber<any> | null>(null);
-    const requestFlowable = new Flowable<Payload<Buffer, Buffer>>((subscriber) => {
-        subscriberRef.current = subscriber;
-
-        // 这里可以开始 emit 初始数据或在外部通过 subscriberRef 来 emit 数据
-        subscriber.onComplete(); // 如果不想立即完成流，可以省略这行
-    });
-
     const location = useLocation();
+
     const queryParams = new URLSearchParams(location.search);
-    const userCode = queryParams.get('userCode');
+    let userCode = queryParams.get('userCode');
+    if (userCode == null) {
+        userCode = ''
+    }
     let token = '';
     if ('1' == userCode) {
         token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdWRvb29tLmNvbSIsInN1YiI6Imh0bWoiLCJ1c2VyQ29kZSI6IjEifQ.tQ9BoTNtn6WliSf9F_ha9F58Q6VD6aP78EOw9BFTHb8'
@@ -49,6 +115,11 @@ function App() {
     } else if ('4' == userCode) {
         token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdWRvb29tLmNvbSIsInN1YiI6Imh0bWoiLCJ1c2VyQ29kZSI6IjQifQ.YIj5vBszPsmBWT5CtapVF45Lfoe9SrUX8mgB_OlXw4o'
     }
+
+    const subscriberRef = useRef<ISubscriber<Payload<Buffer, Buffer>> | null>(null);
+
+
+
     const connInfo = {
         token,
         platform: 'WEB',
@@ -96,7 +167,21 @@ function App() {
                     onNext: value => console.log('传来了数据 %s %s', value.data, value.metadata),
                     onSubscribe: sub => sub.request(maxRSocketRequestN),
                 });
-
+            const requestFlowable = new Flowable<Payload<Buffer, Buffer>>((subscriber) => {
+                subscriberRef.current = subscriber;
+                subscriber.onSubscribe({
+                    request: (n) => {
+                        console.log('request', n);
+                        console.log("发送了消息，n = " + n)
+                    },
+                    cancel: () => {
+                        // 取消task stream
+                        subscriberRef.current = null;
+                        console.log('cancel');
+                    },
+                });
+                // 这里可以开始 emit 初始数据或在外部通过 subscriberRef 来 emit 数据
+            });
             socket.requestChannel(requestFlowable).subscribe({
                 onComplete: () => console.log('Request-channel completed'),
                 onError: error =>
@@ -104,6 +189,13 @@ function App() {
                 onNext: value => console.log('传来了数据 %s %s', value.data, value.metadata),
                 onSubscribe: sub => sub.request(maxRSocketRequestN),
             });
+            if (subscriberRef.current == null) {
+                console.log('subscriberRef.current == null')
+            } else {
+                console.log('subscriberRef.current != null')
+            }
+            subscriberRef.current?.onNext(makeTaskPayload(makeTaskInitMessage(userCode, userCode)))
+            console.log("发送了消息")
         },
         error => {
             // handle connection error
@@ -111,6 +203,8 @@ function App() {
             console.log('error:', error);
         },
     );
+
+
 
     return (
         <>
