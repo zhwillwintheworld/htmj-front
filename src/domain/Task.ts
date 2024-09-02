@@ -26,7 +26,7 @@ enum CommunicateType {
 
 interface ClientMessage {
     messageType: ServerMessageType;
-    messageContent: object;
+    messageContent: TextMessage | MahjongMessage;
 }
 
 enum ServerMessageType {
@@ -37,7 +37,11 @@ enum ServerMessageType {
 interface MahjongMessage {
     type: MahjongMessageType;
     event: MahjongMessageEvent;
-    content: object;
+    content: MahjongInitRequestMessage;
+}
+
+interface TextMessage {
+    text: string
 }
 
 enum MahjongMessageType {
@@ -103,5 +107,5 @@ export {
 export type {
     ClientRequest,
     ClientMessage, MahjongMessage, MahjongInitRequestMessage,
-    InitSeatDTO, UserDTO
+    InitSeatDTO, UserDTO, TextMessage
 };

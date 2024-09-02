@@ -7,6 +7,7 @@ import {
     PLATFORM, CommunicateType,
 } from './domain/Task.ts'
 
+import {TableContext} from './config/TableContext.js'
 import {
     RSocketClient,
     BufferEncoders,
@@ -209,7 +210,14 @@ function App() {
     return (
         <>
             <div>
-                <Dashboard></Dashboard>
+                <TableContext.Provider value={{
+                    tasks: [],
+                    tasksDispatch: () => {
+                    }
+                }}>
+                     <Dashboard></Dashboard>
+                </TableContext.Provider>
+
             </div>
 
         </>
