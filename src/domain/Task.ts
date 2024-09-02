@@ -1,3 +1,5 @@
+import {Table} from "./Table.ts";
+
 interface ClientRequest {
     traceId: string;
     createTime: number;
@@ -37,7 +39,7 @@ enum ServerMessageType {
 interface MahjongMessage {
     type: MahjongMessageType;
     event: MahjongMessageEvent;
-    content: MahjongInitRequestMessage;
+    content: MahjongInitRequestMessage | MahjongOutResponseMessage | MahjongInitResponseMessage;
 }
 
 interface TextMessage {
@@ -66,6 +68,23 @@ interface MahjongInitRequestMessage {
     roomId: string;
     seatInfo: InitSeatDTO,
     tableId: string;
+}
+
+interface MahjongInitResponseMessage {
+    timeLimit: number,
+    table: Table,
+    taskId: String
+}
+
+interface MahjongOutResponseMessage {
+    position: Position,
+    mahjong: Mahjong,
+    table: Table,
+}
+
+
+interface Mahjong {
+    number: Number,
 }
 
 interface InitSeatDTO {
@@ -107,5 +126,8 @@ export {
 export type {
     ClientRequest,
     ClientMessage, MahjongMessage, MahjongInitRequestMessage,
-    InitSeatDTO, UserDTO, TextMessage
+    InitSeatDTO, UserDTO, TextMessage, MahjongOutResponseMessage, Mahjong,
+    MahjongInitResponseMessage
 };
+
+

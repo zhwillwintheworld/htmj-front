@@ -1,10 +1,11 @@
-import Table from "../table/Table.tsx";
+import TableUI from "../table/TableUI.tsx";
+
 function Room() {
 
     return (
         <>
             <div>
-                <Table />
+                <TableUI/>
             </div>
         </>
     )
