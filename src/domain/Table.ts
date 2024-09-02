@@ -1,4 +1,4 @@
-import {Position, UserDTO} from "./Task.ts";
+import {Mahjong, Position, UserDTO} from "./Task.ts";
 
 interface Seat {
     // 用户信息
@@ -6,11 +6,11 @@ interface Seat {
     // 位置
     position: Position,
     // 剩余牌
-    extraList: Array<number>,
+    extraList: Array<Mahjong>,
     // 公开牌
-    publicList: Array<number>,
+    publicList: Array<Mahjong>,
     // 出牌
-    outList: Array<number>,
+    outList: Array<Mahjong>,
     // 分数
     points: number,
     // 下了多少手

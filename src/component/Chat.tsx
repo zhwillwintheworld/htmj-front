@@ -10,7 +10,6 @@ import {
     PLATFORM,
     CommunicateType,
     MahjongMessage,
-    MahjongInitRequestMessage,
     MahjongInitResponseMessage,
     MahjongOutResponseMessage,
 } from '../domain/Task.ts'
@@ -128,7 +127,6 @@ function Chat() {
             console.log(body)
         }
     }
-
     const location = useLocation();
 
     const queryParams = new URLSearchParams(location.search);

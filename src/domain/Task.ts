@@ -84,7 +84,7 @@ interface MahjongOutResponseMessage {
 
 
 interface Mahjong {
-    number: Number,
+    number: number,
 }
 
 interface InitSeatDTO {

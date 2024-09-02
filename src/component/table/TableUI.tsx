@@ -4,7 +4,7 @@ import {TableContext} from '../../config/TableContext'
 import {useContext} from "react";
 import {useLocation} from "react-router-dom";
 import {Seat,Table} from "../../domain/Table.ts";
-import {Position} from "../../domain/Task.ts";
+import {Mahjong, Position} from "../../domain/Task.ts";
 
 // 定义麻将牌类型，可以扩展为更加具体的类型
 interface Tile {
@@ -13,7 +13,8 @@ interface Tile {
     type: 'hand' | 'discarded' | 'pung';
 }
 
-const getTiles = (count: number,type: 'hand' | 'discarded' | 'pung'): Tile => {
+const getTiles = (mah: Mahjong,type: 'hand' | 'discarded' | 'pung'): Tile => {
+    const count = mah.number;
     if(count <10){
         return {
             id: count,
@@ -100,10 +101,10 @@ function TableUI() {
     const topExtra = third.extraList.map(id => getTiles(id, 'hand'))
     const topPublic = third.publicList.map(id => getTiles(id, 'pung'));
     const topOut = third.outList.map(id => getTiles(id, 'discarded'));
-    const fouth = getNextSeat(tasks, third.position);
-    const leftExtra = fouth.extraList.map(id => getTiles(id, 'hand'))
-    const leftPublic = fouth.publicList.map(id => getTiles(id, 'pung'));
-    const leftOut = fouth.outList.map(id => getTiles(id, 'discarded'));
+    const fourth = getNextSeat(tasks, third.position);
+    const leftExtra = fourth.extraList.map(id => getTiles(id, 'hand'))
+    const leftPublic = fourth.publicList.map(id => getTiles(id, 'pung'));
+    const leftOut = fourth.outList.map(id => getTiles(id, 'discarded'));
 
 
     return (
