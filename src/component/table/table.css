@@ -24,10 +24,10 @@
 }
 
 .left {
-    width: 25vw;
+    width: 15vw;
     height: 50vh;
-    left: 10px;
     top: 25%;
+    left : 20%;
     flex-direction:row ;
     justify-content: center;
     align-items: center;
