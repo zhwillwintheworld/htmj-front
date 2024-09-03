@@ -3,40 +3,53 @@ import {Button} from 'antd';
 import {TableContext} from '../../config/TableContext'
 import {useContext} from "react";
 import {useLocation} from "react-router-dom";
-import {Seat,Table} from "../../domain/Table.ts";
+import {Seat, Table} from "../../domain/Table.ts";
 import {Mahjong, Position} from "../../domain/Task.ts";
 
 // 定义麻将牌类型，可以扩展为更加具体的类型
 interface Tile {
     id: number;
     symbol: string;
+    order: number;
     type: 'hand' | 'discarded' | 'pung';
 }
 
-const getTiles = (mah: Mahjong,type: 'hand' | 'discarded' | 'pung'): Tile => {
+const getTiles = (mah: Mahjong, type: 'hand' | 'discarded' | 'pung'): Tile => {
     const count = mah.number;
-    if(count <10){
+    if(count == 0){
+        return {
+            id: 0,
+            symbol: '',
+            order: mah.order,
+            type
+        };
+    }
+    if (count < 10) {
         return {
             id: count,
             symbol: String(count + '万'),
-            type
+            order: mah.order,
+            type,
+
         };
-    }else if(count < 20){
+    } else if (count < 20) {
         return {
             id: count,
-            symbol: String(count-10 + '条'),
+            symbol: String(count - 10 + '条'),
+            order: mah.order,
             type
         };
-    }else{
+    } else {
         return {
             id: count,
-            symbol: String(count-20 + '筒'),
+            symbol: String(count - 20 + '筒'),
+            order: mah.order,
             type
         };
     }
 }
 
-const getNextSeat = (table: Table, position: Position): Seat =>{
+const getNextSeat = (table: Table, position: Position): Seat => {
     switch (position) {
         case Position.EAST:
             return table.north;
@@ -55,7 +68,7 @@ const renderTiles = (tiles: Tile[], position: 'horizontal' | 'verticalLeft' | 'v
         <div className={`tile-row ${position}`}>
             {tiles.map(tile => (
                 <Button
-                    key={tile.id}
+                    key={tile.order}
                     className={`tile ${tile.type}`}
                     onMouseEnter={() => console.log('Hovering!')}
                 >
@@ -67,27 +80,27 @@ const renderTiles = (tiles: Tile[], position: 'horizontal' | 'verticalLeft' | 'v
 };
 
 function TableUI() {
+
+    const location = useLocation();
     const tasks = useContext(TableContext);
-    if(tasks == null){
+    if (tasks == null) {
         return <div>加载中...</div>
     }
-    const location = useLocation();
-
     const queryParams = new URLSearchParams(location.search);
-    let userCode = queryParams.get('userCode');
+    const userCode = queryParams.get('userCode');
     if (userCode == null) {
         return <div>加载中...</div>
     }
-    let currentSeat : Seat;
-    if(tasks.east.user.userCode == userCode){
+    let currentSeat: Seat;
+    if (tasks.east.user.userCode == userCode) {
         currentSeat = tasks.east;
-    }else if(tasks.north.user.userCode == userCode){
+    } else if (tasks.north.user.userCode == userCode) {
         currentSeat = tasks.north;
-    }else if(tasks.south.user.userCode == userCode){
+    } else if (tasks.south.user.userCode == userCode) {
         currentSeat = tasks.south;
-    }else if(tasks.west.user.userCode == userCode){
+    } else if (tasks.west.user.userCode == userCode) {
         currentSeat = tasks.west;
-    }else{
+    } else {
         return <div>加载中...</div>
     }
     const bottomExtra = currentSeat.extraList.map(id => getTiles(id, 'hand'))

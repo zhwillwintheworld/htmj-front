@@ -1,4 +1,4 @@
-import {Table} from "./Table.ts";
+import {Seat, SupplierType, Table} from "./Table.ts";
 
 interface ClientRequest {
     traceId: string;
@@ -39,7 +39,8 @@ enum ServerMessageType {
 interface MahjongMessage {
     type: MahjongMessageType;
     event: MahjongMessageEvent;
-    content: MahjongInitRequestMessage | MahjongOutResponseMessage | MahjongInitResponseMessage;
+    content: MahjongInitRequestMessage | MahjongOutResponseMessage | MahjongInitResponseMessage |
+        MahjongChangeResponseMessage | MahjongSendLeaseResponseMessage | MahjongLeaseResponseMessage | MahjongEndResponseMessage | MahjongErrorResponseMessage;
 }
 
 interface TextMessage {
@@ -73,7 +74,7 @@ interface MahjongInitRequestMessage {
 interface MahjongInitResponseMessage {
     timeLimit: number,
     table: Table,
-    taskId: String
+    taskId: string
 }
 
 interface MahjongOutResponseMessage {
@@ -82,9 +83,107 @@ interface MahjongOutResponseMessage {
     table: Table,
 }
 
+interface MahjongChangeResponseMessage {
+    timeLimit: number,
+    position: Position,
+    mahjong: Mahjong,
+    taskId: string,
+}
+
+// 发送租约 响应
+interface MahjongSendLeaseResponseMessage {
+    timeLimit: number,
+    statusList: Array<LeaseStatus>,
+    happenedPosition: Position,
+    mahjong: Mahjong,
+    leaseNumber: number,
+    taskId: string
+}
+
+// 租约响应
+interface MahjongLeaseResponseMessage {
+    status: LeaseStatus,
+    leaseNumber: number,
+    happenedUser: Seat,
+    receiveUser: Array<Position>,
+    mahjong: Mahjong,
+    table: Table
+}
+
+// 结束响应
+interface MahjongEndResponseMessage {
+    winner: Array<HuDetail> | null,
+    loser: Array<LoseDetail> | null,
+    table: Table,
+    endWay: EndWay,
+}
+
+interface MahjongErrorResponseMessage {
+    code: number,
+    message: string
+}
+
+
+interface HuDetail {
+    position: Position,
+    huType: Array<HuType>,
+    operation: SupplierType,
+    points: number
+}
+
+enum LeaseStatus {
+    // 碰
+    PENG = 'PENG',
+    // 胡
+    HU = 'HU',
+    // 杠
+    GANG = 'GANG',
+    PRIVATE_GANG = 'PRIVATE_GANG',
+    PUBLIC_GANG = 'PUBLIC_GANG',
+    // 报听
+    PUBLIC = 'PUBLIC',
+    // 不要
+    NONE = 'NONE'
+}
+
+enum HuType {
+    GENERAL = 'GENERAL',
+
+    // 清一色
+    CLEAR = 'CLEAR',
+
+    // 碰碰胡
+    PENG_PENG_HU = 'PENG_PENG_HU',
+
+    // 258
+    TWO_FIVE_EIGHT = 'TWO_FIVE_EIGHT',
+
+    // 七小对
+    SEVEN_PAIR = 'SEVEN_PAIR',
+
+    // 龙七对
+    LOONG_SEVEN_PAIR = 'LOONG_SEVEN_PAIR',
+
+    // 报听
+    BAO_TING = 'BAO_TING',
+
+    // 缺一门
+    TWO_COLOR = 'TWO_COLOR',
+
+    // 无将糊
+    NO_JIANG = 'NO_JIANG',
+}
+
+interface LoseDetail {
+    position: Position,
+    operation: SupplierType,
+    points: number
+}
+
 
 interface Mahjong {
     number: number,
+    order: number
 }
 
 interface InitSeatDTO {
@@ -103,6 +202,10 @@ enum Position {
     NORTH = 'NORTH',
 }
 
+enum EndWay {
+    HU = 'HU',
+    NO_MAHJONG = 'NO_MAHJONG',
+}
 
 interface UserDTO {
     userCode: string,
@@ -127,7 +230,8 @@ export type {
     ClientRequest,
     ClientMessage, MahjongMessage, MahjongInitRequestMessage,
     InitSeatDTO, UserDTO, TextMessage, MahjongOutResponseMessage, Mahjong,
-    MahjongInitResponseMessage
+    MahjongInitResponseMessage, MahjongChangeResponseMessage, MahjongErrorResponseMessage,
+    MahjongSendLeaseResponseMessage, MahjongLeaseResponseMessage, MahjongEndResponseMessage
 };
 
 

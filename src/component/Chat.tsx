@@ -2,25 +2,30 @@ import {useLocation} from 'react-router-dom';
 import Dashboard from "./Dashboard.tsx";
 import {
     ClientRequest,
-    ServerMessageType,
-    MahjongMessageType,
-    MahjongMessageEvent,
-    Position,
-    UserType,
-    PLATFORM,
     CommunicateType,
-    MahjongMessage,
+    MahjongChangeResponseMessage,
+    MahjongEndResponseMessage,
+    MahjongErrorResponseMessage,
     MahjongInitResponseMessage,
+    MahjongLeaseResponseMessage,
+    MahjongMessage,
+    MahjongMessageEvent,
+    MahjongMessageType,
     MahjongOutResponseMessage,
+    MahjongSendLeaseResponseMessage,
+    PLATFORM,
+    Position,
+    ServerMessageType,
+    UserType,
 } from '../domain/Task.ts'
 import {TableChangeContext} from '../config/TableContext.ts'
 import {
-    RSocketClient,
     BufferEncoders,
     encodeCompositeMetadata,
+    encodeRoute,
     MESSAGE_RSOCKET_COMPOSITE_METADATA,
     MESSAGE_RSOCKET_ROUTING,
-    encodeRoute,
+    RSocketClient,
 } from 'rsocket-core';
 import RSocketWebSocketClient from 'rsocket-websocket-client';
 import {Buffer} from 'buffer';
@@ -106,6 +111,8 @@ const makeTaskInitMessage = (userCode: string, token: string): ClientRequest => 
 
 
 function Chat() {
+    const location = useLocation();
+    const subscriberRef = useRef<ISubscriber<Payload<Buffer, Buffer>> | null>(null);
     const dispatch = useContext(TableChangeContext)
     if (dispatch == null) {
         return <Dashboard/>
@@ -118,16 +125,36 @@ function Chat() {
             switch (messageContent.event) {
                 case MahjongMessageEvent.INIT_RESPONSE:
                     body = messageContent.content as MahjongInitResponseMessage;
+                    console.log('收到初始化响应，出牌人为')
                     dispatch({type: 'SET_TABLE', payload: body.table})
                     break;
                 case MahjongMessageEvent.OUT_RESPONSE:
                     body = messageContent.content as MahjongOutResponseMessage;
+                    console.log('收到出牌响应，出牌人为' + body.position)
                     dispatch({type: 'SET_TABLE', payload: body.table})
+                    break
+                case MahjongMessageEvent.CHANGE_RESPONSE:
+                    body = messageContent.content as MahjongChangeResponseMessage;
+                    console.log('收到切换响应，响应人为' + body.position)
+                    break
+                case MahjongMessageEvent.END_RESPONSE:
+                    body = messageContent.content as MahjongEndResponseMessage;
+                    break
+                case MahjongMessageEvent.ERROR_RESPONSE:
+                    body = messageContent.content as MahjongErrorResponseMessage;
+                    break
+                case MahjongMessageEvent.LEASE_RESPONSE:
+                    body = messageContent.content as MahjongLeaseResponseMessage;
+                    console.log('收到响应的LEASE_RESPONSE，响应人为' + body.happenedUser.position)
+                    break
+                case MahjongMessageEvent.SEND_LEASE_RESPONSE:
+                    body = messageContent.content as MahjongSendLeaseResponseMessage;
+                    console.log('收到发送的LEASE_RESPONSE，响应人为')
+                    break
             }
             console.log(body)
         }
     }
-    const location = useLocation();
 
     const queryParams = new URLSearchParams(location.search);
     let userCode = queryParams.get('userCode');
@@ -144,9 +171,6 @@ function Chat() {
     } else if ('4' == userCode) {
         token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdWRvb29tLmNvbSIsInN1YiI6Imh0bWoiLCJ1c2VyQ29kZSI6IjQifQ.YIj5vBszPsmBWT5CtapVF45Lfoe9SrUX8mgB_OlXw4o'
     }
-
-    const subscriberRef = useRef<ISubscriber<Payload<Buffer, Buffer>> | null>(null);
-
 
     const connInfo = {
         token,
@@ -232,13 +256,11 @@ function Chat() {
         },
     );
 
-
     return (
         <>
             <div>
                 <Dashboard></Dashboard>
             </div>
-
         </>
     )
 }

@@ -58,12 +58,18 @@ interface Table {
 }
 
 enum TaskType {
-    OUT,
-    LEASE
+    OUT = 'OUT',
+    LEASE = 'LEASE',
+}
+
+enum SupplierType {
+    CATCH = 'CATCH',
+    OUT = 'OUT',
+    GANG = 'GANG',
 }
 
 export {
-    TaskType
+    TaskType,SupplierType
 }
 
 export type {

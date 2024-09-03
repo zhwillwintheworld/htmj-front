@@ -5,11 +5,8 @@ import {Position, UserType} from "../domain/Task.js";
 export const TableContext= createContext<Table|null>(null);
 export const TableChangeContext = createContext<React.Dispatch<Action>|null>(null);
 
-
 // 上下文提供者组件
 // 定义 TasksProvider 组件
-
-
 export function useTasks() {
     return useContext(TableContext);
 }
@@ -28,7 +25,6 @@ export function tableReducer(table: Table,action: Action) {
         default:
             throw new Error(`Unhandled action type: ${action.type}`);
     }
-
 }
 
 export const table: Table = {
