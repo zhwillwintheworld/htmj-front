@@ -1,13 +1,13 @@
 import Chat from "./component/Chat.tsx";
-import {TasksProvider} from "./component/TaskProvider.tsx";
+import {TableProvider} from "./component/TableProvider.tsx";
 
 function App() {
     return (
         <>
             <div>
-                <TasksProvider>
+                <TableProvider>
                     <Chat></Chat>
-                </TasksProvider>
+                </TableProvider>
             </div>
 
         </>
