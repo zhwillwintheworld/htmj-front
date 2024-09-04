@@ -1,12 +1,22 @@
 import Card from "./Card.tsx";
+import {Mahjong, Position} from "../../domain/Task.ts";
+import {LeaseStats} from "rsocket-core";
 
 type SeatProps = {
-    position: 'top' | 'bottom' | 'left' | 'right';
+    extra : Array<Mahjong>,
+    publicList: Array<Mahjong>,
+    out: Array<Mahjong>,
+    seat: 'top' | 'bottom' | 'left' | 'right';
+    position: Position;
+    leaseStatus :LeaseStats,
+    point: number,
+    isPublic: boolean,
 };
 
-function UserSeat({position}: SeatProps) {
-    const isHorizontal = position === 'top' || position === 'bottom';
-    const direction = position === 'top' ? 'column' : position === 'bottom' ? 'column-reverse' : position === 'left' ? 'row' : 'row-reverse';
+function UserSeat({out,publicList,extra,seat}: SeatProps) {
+    const isHorizontal = seat === 'top' || seat === 'bottom';
+    const direction = seat === 'top' ? 'column' : seat === 'bottom' ? 'column-reverse' : seat === 'left' ? 'row' : 'row-reverse';
+    const isLeft = seat === 'left';
     return (
         <>
             <div style={{
@@ -15,38 +25,40 @@ function UserSeat({position}: SeatProps) {
                 justifyContent: 'center',
                 alignItems: 'center',
             }}>
-                <div style={{margin: '10px',display:'flex',transformOrigin: 'center',position: 'relative'} }>
+                <div style={{margin: '5px', display: 'flex',}}>
                     {/* 手牌区域 */}
                     <div style={{
                         display: 'flex',
                         flexDirection: isHorizontal ? 'row' : 'column',
-                        transformOrigin: 'center',
-                        position: 'relative'
                     }}>
-                        <Card value="🀇" isHorizontal={isHorizontal}/>
-                        <Card value="🀈" isHorizontal={isHorizontal}/>
-                        <Card value="🀉" isHorizontal={isHorizontal}/>
-                        <Card value="🀊" isHorizontal={isHorizontal}/>
-                        <Card value="🀋" isHorizontal={isHorizontal}/>
-                        <Card value="🀌" isHorizontal={isHorizontal}/>
-                        <Card value="🀍" isHorizontal={isHorizontal}/>
-                        <Card value="🀎" isHorizontal={isHorizontal}/>
-                        <Card value="🀏" isHorizontal={isHorizontal}/>
+                        {
+                            extra.map((item) => (
+                                <Card key={item.order} value={item.number} isHorizontal={isHorizontal} isLeft={isLeft}/>
+                            ))
+                        }
                     </div>
                 </div>
 
-                <div style={{margin: '10px',display:'flex',transformOrigin: 'center',position: 'relative'}}>
+                <div style={{margin: '5px', display: 'flex',}}>
                     {/* 碰牌区域 */}
-                    <div style={{display: 'flex', flexDirection: isHorizontal ? 'row' : 'column',   transformOrigin: 'center',position: 'relative'}}>
-                        <Card value="🀄" isHorizontal={isHorizontal}/>
-                        <Card value="🀅" isHorizontal={isHorizontal}/>
-                        <Card value="🀆" isHorizontal={isHorizontal}/>
+                    <div style={{display: 'flex', flexDirection: isHorizontal ? 'row' : 'column',}}>
+                        {
+                            publicList.map((item) => (
+                                <Card key={item.order} value={item.number} isHorizontal={isHorizontal} isLeft={isLeft}/>
+                            ))
+                        }
                     </div>
                 </div>
 
-                <div style={{margin: '10px'}}>
-                    {/* 悬浮按钮区域 */}
-                    <button>操作</button>
+                <div style={{margin: '5px', display: 'flex',}}>
+                    {/* 亍牌区域 */}
+                    <div style={{display: 'flex', flexDirection: isHorizontal ? 'row' : 'column',}}>
+                        {
+                            out.map((item) => (
+                                <Card key={item.order} value={item.number} isHorizontal={isHorizontal} isLeft={isLeft}/>
+                            ))
+                        }
+                    </div>
                 </div>
             </div>
         </>

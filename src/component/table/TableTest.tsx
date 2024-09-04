@@ -13,7 +13,7 @@ function App() {
       `,
                 backgroundColor: '#004d40',
                 gap: '10px',
-                width: '99vw',
+                width: '100vw',
                 height: '100vh'
             }}>
                 <div style={{gridArea: 'top'}}>
