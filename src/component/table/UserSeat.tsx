@@ -15,18 +15,29 @@ function UserSeat({position}: SeatProps) {
                 justifyContent: 'center',
                 alignItems: 'center',
             }}>
-                <div style={{margin: '10px'}}>
+                <div style={{margin: '10px',display:'flex',transformOrigin: 'center',position: 'relative'} }>
                     {/* 手牌区域 */}
-                    <div style={{display: 'flex', flexDirection: isHorizontal ? 'row' : 'column'}}>
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: isHorizontal ? 'row' : 'column',
+                        transformOrigin: 'center',
+                        position: 'relative'
+                    }}>
                         <Card value="🀇" isHorizontal={isHorizontal}/>
                         <Card value="🀈" isHorizontal={isHorizontal}/>
                         <Card value="🀉" isHorizontal={isHorizontal}/>
+                        <Card value="🀊" isHorizontal={isHorizontal}/>
+                        <Card value="🀋" isHorizontal={isHorizontal}/>
+                        <Card value="🀌" isHorizontal={isHorizontal}/>
+                        <Card value="🀍" isHorizontal={isHorizontal}/>
+                        <Card value="🀎" isHorizontal={isHorizontal}/>
+                        <Card value="🀏" isHorizontal={isHorizontal}/>
                     </div>
                 </div>
 
-                <div style={{margin: '10px'}}>
+                <div style={{margin: '10px',display:'flex',transformOrigin: 'center',position: 'relative'}}>
                     {/* 碰牌区域 */}
-                    <div style={{display: 'flex', flexDirection: isHorizontal ? 'row' : 'column'}}>
+                    <div style={{display: 'flex', flexDirection: isHorizontal ? 'row' : 'column',   transformOrigin: 'center',position: 'relative'}}>
                         <Card value="🀄" isHorizontal={isHorizontal}/>
                         <Card value="🀅" isHorizontal={isHorizontal}/>
                         <Card value="🀆" isHorizontal={isHorizontal}/>

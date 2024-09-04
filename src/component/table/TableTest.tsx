@@ -1,5 +1,6 @@
 import './tableTest.css'
 import UserSeat from "./UserSeat.tsx";
+
 function App() {
     return (
         <>
@@ -10,9 +11,10 @@ function App() {
         "left center right"
         "bottom bottom bottom"
       `,
+                backgroundColor: '#004d40',
                 gap: '10px',
-                width: '100%',
-                height: '100%'
+                width: '99vw',
+                height: '100vh'
             }}>
                 <div style={{gridArea: 'top'}}>
                     <UserSeat position="top"/>
