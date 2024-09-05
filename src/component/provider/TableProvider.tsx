@@ -1,5 +1,5 @@
 import {ReactNode, useReducer} from "react";
-import {table, TableChangeContext, TableContext, tableReducer} from "../config/TableContext.ts";
+import {table, TableChangeContext, TableContext, tableReducer} from "../../config/TableContext.ts";
 
 // Provider 组件
 interface TableProviderProps {

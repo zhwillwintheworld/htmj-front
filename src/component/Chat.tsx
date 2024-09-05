@@ -1,8 +1,6 @@
 import {useLocation} from 'react-router-dom';
 import Dashboard from "./Dashboard.tsx";
 import {
-    ClientRequest,
-    CommunicateType,
     MahjongChangeResponseMessage,
     MahjongEndResponseMessage,
     MahjongErrorResponseMessage,
@@ -10,13 +8,9 @@ import {
     MahjongLeaseResponseMessage,
     MahjongMessage,
     MahjongMessageEvent,
-    MahjongMessageType,
     MahjongOutResponseMessage,
     MahjongSendLeaseResponseMessage,
-    PLATFORM,
-    Position,
     ServerMessageType,
-    UserType,
 } from '../domain/Task.ts'
 import {TableChangeContext} from '../config/TableContext.ts'
 import {
@@ -32,6 +26,8 @@ import {Buffer} from 'buffer';
 import {ISubscriber, Payload} from "rsocket-types";
 import {Flowable} from "rsocket-flowable";
 import {useContext, useRef} from "react";
+import { MessageContext } from '../config/MessageContext.ts';
+import {makeInitTaskMessage, makeMessage, makeTaskPayload} from "./util/MessageUtil.ts";
 
 if (typeof window !== 'undefined') {
     window.Buffer = Buffer;
@@ -43,73 +39,6 @@ const lifetime = 180000;
 const dataMimeType = 'application/json';
 const metadataMimeType = MESSAGE_RSOCKET_COMPOSITE_METADATA.string;
 const route = 'im.v1.setup';
-
-const makeTaskPayload = (clientRequest: ClientRequest): Payload<Buffer, Buffer> => {
-    return {
-        data: Buffer.from(JSON.stringify(clientRequest)),
-        metadata: encodeCompositeMetadata([
-            [MESSAGE_RSOCKET_ROUTING, encodeRoute("im.v1.task")],
-        ]),
-    }
-}
-
-const makeTaskInitMessage = (userCode: string, token: string): ClientRequest => {
-    return {
-        traceId: new Date().valueOf() + "",
-        createTime: new Date().valueOf(),
-        userCode,
-        token,
-        platform: PLATFORM.WEB,
-        communicateType: CommunicateType.ROOM,
-        communicateUserCode: '',
-        communicateRoomCode: '1',
-        communicateGroupCode: '',
-        message: {
-            messageType: ServerMessageType.MAHJONG,
-            messageContent: {
-                type: MahjongMessageType.REQUEST,
-                event: MahjongMessageEvent.INIT_REQUEST,
-                content: {
-                    roomId: '1',
-                    seatInfo: {
-                        east: {
-                            userCode: '1',
-                            userName: '',
-                            nickName: '',
-                            avatar: '',
-                            userType: UserType.MANAGER
-                        },
-                        south: {
-                            userCode: '2',
-                            userName: '',
-                            nickName: '',
-                            avatar: '',
-                            userType: UserType.MANAGER
-                        },
-                        west: {
-                            userCode: '3',
-                            userName: '',
-                            nickName: '',
-                            avatar: '',
-                            userType: UserType.MANAGER
-                        },
-                        north: {
-                            userCode: '4',
-                            userName: '',
-                            nickName: '',
-                            avatar: '',
-                            userType: UserType.MANAGER
-                        },
-                        openUser: Position.EAST
-                    },
-                    tableId: '1'
-                }
-            }
-        }
-    }
-}
-
-
 function Chat() {
     const location = useLocation();
     const subscriberRef = useRef<ISubscriber<Payload<Buffer, Buffer>> | null>(null);
@@ -246,7 +175,7 @@ function Chat() {
             } else {
                 console.log('subscriberRef.current != null')
             }
-            subscriberRef.current?.onNext(makeTaskPayload(makeTaskInitMessage(userCode, userCode)))
+            subscriberRef.current?.onNext(makeTaskPayload(makeMessage(userCode, userCode,makeInitTaskMessage())))
             console.log("发送了消息")
         },
         error => {
@@ -259,7 +188,9 @@ function Chat() {
     return (
         <>
             <div>
+                <MessageContext.Provider value={subscriberRef.current}>
                 <Dashboard></Dashboard>
+                </MessageContext.Provider>
             </div>
         </>
     )

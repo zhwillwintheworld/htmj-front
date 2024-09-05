@@ -78,35 +78,49 @@ function TableContent() {
         mahjong: null,
         position: Position.EAST,
         rightList: rightList,
-        topList: topList
+        topList: topList,
+        randomNumber: tasks.randomNumber
     }
     return (
         <>
             <div style={{
                 display: 'grid',
                 gridTemplateAreas: `
-        "top top top"
+        "left top right"
         "left center right"
-        "bottom bottom bottom"
+        "left bottom right"
       `,
-                backgroundColor: '#004d40',
+                backgroundColor: '#004d4c',
                 gap: '10px',
                 width: '100vw',
                 height: '100vh'
             }}>
-                <div style={{gridArea: 'top'}}>
+                <div style={{
+                    gridArea: 'top', height: '30vh', justifyContent: 'center',
+                    alignItems: 'center', display: 'flex',
+                }}>
                     <UserSeat props={top}/>
                 </div>
-                <div style={{gridArea: 'left'}}>
+                <div style={{
+                    gridArea: 'left', display: 'flex',
+                    width: '30vw',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}>
                     <UserSeat props={left}/>
                 </div>
-                <div style={{gridArea: 'center'}}>
-                    <TableCenter data={center}/>
+                <div style={{gridArea: 'center', width: '40vw', height: '40vh'}}>
+                    <TableCenter props={center}/>
                 </div>
-                <div style={{gridArea: 'right'}}>
+                <div style={{
+                    gridArea: 'right', display: 'flex',
+                    width: '30vw',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}>
                     <UserSeat props={right}/>
                 </div>
-                <div style={{gridArea: 'bottom'}}>
+                <div style={{gridArea: 'bottom', height: '30vh'}}>
                     <UserSeat props={bottom}/>
                 </div>
             </div>

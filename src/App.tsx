@@ -1,5 +1,5 @@
 import Chat from "./component/Chat.tsx";
-import {TableProvider} from "./component/TableProvider.tsx";
+import {TableProvider} from "./component/provider/TableProvider.tsx";
 
 function App() {
     return (

@@ -32,10 +32,12 @@ type CardProps = {
     value: number; // 牌的显示内容
     isHorizontal: boolean; // 是否水平排列
     isLeft: boolean;
+    isSelected: boolean; // 判断当前 card 是否被选中
+    onSelect: () => void; // 处理点击事件
+    onConfirm: () => void; // 当再次点击被选中的按钮时执行的逻辑
 };
 
 const getImg = (value: number) => {
-    value = 0
     switch (value) {
         case 0:
             return back
@@ -98,14 +100,23 @@ const getImg = (value: number) => {
     }
 }
 
-function Card({value, isHorizontal, isLeft}: CardProps) {
+function Card({value, isHorizontal, isLeft, isSelected, onSelect, onConfirm}: CardProps) {
+    const handleClick = () => {
+        if (isSelected) {
+            onConfirm(); // 如果当前 card 已被选中，执行确认操作
+        } else {
+            onSelect(); // 否则标记为选中
+        }
+    };
     const rotate = !isHorizontal && isLeft ? 'rotate(90deg)' : !isHorizontal && !isLeft ? 'rotate(-90deg)' : 'rotate(0deg)'
+    const xy = isSelected ? !isHorizontal && isLeft ? 'translateX(20px)' : !isHorizontal && !isLeft ? 'translateX(-20px)' : 'translateY(20px)' : 'translateY(0px)'
+    const transform = `${rotate} ${xy}`
     return (
         <>
             <div style={
                 {
-                    width: isHorizontal ? '30x' : '42px',
-                    height: isHorizontal ? '42px' : '30px',
+                    width: isHorizontal ? '35x' : '50px',
+                    height: isHorizontal ? '50px' : '35px',
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -122,18 +133,20 @@ function Card({value, isHorizontal, isLeft}: CardProps) {
                 }}>
                     <Button
                         style={{
-                            background: 'none',
                             padding: '0',
                             width: '100%',
                             height: '100%',
                             transformOrigin: 'center'
                         }}
-                        onMouseEnter={() => console.log('Hovering!')}
+                        onMouseEnter={() => console.log('Hovering!')
+                        }
+                        onClick={handleClick}
+
                     >
                         <img src={getImg(value)} style={{
                             width: '30px',
                             height: '42px',
-                            transform: rotate
+                            transform: transform
                         }} alt={"牌"}/>
 
                     </Button>

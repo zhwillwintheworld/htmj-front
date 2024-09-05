@@ -40,7 +40,8 @@ interface MahjongMessage {
     type: MahjongMessageType;
     event: MahjongMessageEvent;
     content: MahjongInitRequestMessage | MahjongOutResponseMessage | MahjongInitResponseMessage |
-        MahjongChangeResponseMessage | MahjongSendLeaseResponseMessage | MahjongLeaseResponseMessage | MahjongEndResponseMessage | MahjongErrorResponseMessage;
+        MahjongChangeResponseMessage | MahjongSendLeaseResponseMessage | MahjongLeaseResponseMessage
+        | MahjongEndResponseMessage | MahjongErrorResponseMessage | MahjongOutRequestMessage
 }
 
 interface TextMessage {
@@ -69,6 +70,15 @@ interface MahjongInitRequestMessage {
     roomId: string;
     seatInfo: InitSeatDTO,
     tableId: string;
+}
+
+interface MahjongOutRequestMessage {
+    tableId: string,
+    position: Position,
+    mahjong: Mahjong,
+    tableStep: number,
+    seatStep: number,
+    taskId: string,
 }
 
 interface MahjongInitResponseMessage {
@@ -231,7 +241,8 @@ export type {
     ClientMessage, MahjongMessage, MahjongInitRequestMessage,
     InitSeatDTO, UserDTO, TextMessage, MahjongOutResponseMessage, Mahjong,
     MahjongInitResponseMessage, MahjongChangeResponseMessage, MahjongErrorResponseMessage,
-    MahjongSendLeaseResponseMessage, MahjongLeaseResponseMessage, MahjongEndResponseMessage
+    MahjongSendLeaseResponseMessage, MahjongLeaseResponseMessage, MahjongEndResponseMessage,
+    MahjongOutRequestMessage
 };
 
 

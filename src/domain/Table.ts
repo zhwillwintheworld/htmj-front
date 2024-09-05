@@ -72,6 +72,7 @@ enum SupplierType {
 interface SeatProps {
     extraList: Array<Mahjong>,
     publicList: Array<Mahjong>,
+    outList: Array<Mahjong>,
     seat: 'top' | 'bottom' | 'left' | 'right';
     position: Position;
     leaseStatus: LeaseStats | null,
@@ -80,6 +81,9 @@ interface SeatProps {
     user: UserDTO,
     // 下了多少手
     step: number,
+    tableId: string,
+    tableStep: number,
+    taskId: string,
 }
 
 interface CenterProps {
@@ -89,6 +93,7 @@ interface CenterProps {
     rightList: Array<Mahjong>,
     position: Position,
     mahjong: Mahjong | null,
+    randomNumber: number,
 }
 
 export {
@@ -97,5 +102,5 @@ export {
 }
 
 export type {
-    Table, Seat, SeatProps,CenterProps
+    Table, Seat, SeatProps, CenterProps
 }
