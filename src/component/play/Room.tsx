@@ -1,5 +1,4 @@
-import TableUI from "../table/TableUI.tsx";
-import TableTest from "../table/TableTest.tsx";
+import TableTest from "../table/TableContent.tsx";
 
 function Room() {
 

@@ -1,4 +1,5 @@
 import {Mahjong, Position, UserDTO} from "./Task.ts";
+import {LeaseStats} from "rsocket-core";
 
 interface Seat {
     // 用户信息
@@ -68,10 +69,33 @@ enum SupplierType {
     GANG = 'GANG',
 }
 
+interface SeatProps {
+    extraList: Array<Mahjong>,
+    publicList: Array<Mahjong>,
+    seat: 'top' | 'bottom' | 'left' | 'right';
+    position: Position;
+    leaseStatus: LeaseStats | null,
+    points: number,
+    isPublic: boolean,
+    user: UserDTO,
+    // 下了多少手
+    step: number,
+}
+
+interface CenterProps {
+    topList: Array<Mahjong>,
+    bottomList: Array<Mahjong>,
+    leftList: Array<Mahjong>,
+    rightList: Array<Mahjong>,
+    position: Position,
+    mahjong: Mahjong | null,
+}
+
 export {
-    TaskType,SupplierType
+
+    TaskType, SupplierType
 }
 
 export type {
-    Table, Seat
+    Table, Seat, SeatProps,CenterProps
 }

@@ -27,6 +27,42 @@ export function tableReducer(table: Table,action: Action) {
     }
 }
 
+const mahjongList = [{
+    number:1,order:1
+},{
+    number:1,order:2
+},{
+    number:1,order:3
+},{
+    number:1,order:4
+},{
+    number:1,order:5
+},{
+    number:1,order:6
+},{
+    number:1,order:7
+},
+{
+    number:1,order:8
+},
+{
+    number:1,order:9
+},
+{
+    number:1,order:10
+},
+{
+    number:1,order:11
+},
+{
+    number:1,order:12
+},
+{
+    number:1,order:13
+},
+{
+    number:1,order:14
+},]
 export const table: Table = {
     bigBigWinConfig: false,
     canFireWinner: false,
@@ -34,16 +70,16 @@ export const table: Table = {
     completeWinnerConfig: false,
     createTime: 0,
     currentSeat: {
-        extraList: [],
+        extraList: mahjongList,
         isPublic: false,
         isReady: false,
-        outList: [],
+        outList: mahjongList,
         points: 0,
         position: Position.EAST,
-        publicList: [],
+        publicList: mahjongList,
         step: 0,
         user: {
-            userCode: '',
+            userCode: '1',
             userType: UserType.GENERAL,
             userName: '',
             avatar: '',
@@ -51,16 +87,16 @@ export const table: Table = {
         }
     },
     east: {
-        extraList: [],
+        extraList: mahjongList,
         isPublic: false,
         isReady: false,
-        outList: [],
+        outList: mahjongList,
         points: 0,
         position: Position.EAST,
-        publicList: [],
+        publicList: mahjongList,
         step: 0,
         user: {
-            userCode: '',
+            userCode: '1',
             userType: UserType.GENERAL,
             userName: '',
             avatar: '',
@@ -70,16 +106,16 @@ export const table: Table = {
     fireWinnerConfig: 0,
     leaseNumber: 0,
     north: {
-        extraList: [],
+        extraList: mahjongList,
         isPublic: false,
         isReady: false,
-        outList: [],
+        outList: mahjongList,
         points: 0,
         position: Position.NORTH,
-        publicList: [],
+        publicList: mahjongList,
         step: 0,
         user: {
-            userCode: '',
+            userCode: '2',
             userType: UserType.GENERAL,
             userName: '',
             avatar: '',
@@ -96,16 +132,16 @@ export const table: Table = {
     randomNumber: 0,
     roomId: '',
     south: {
-        extraList: [],
+        extraList: mahjongList,
         isPublic: false,
         isReady: false,
-        outList: [],
+        outList: mahjongList,
         points: 0,
         position: Position.SOUTH,
-        publicList: [],
+        publicList: mahjongList,
         step: 0,
         user: {
-            userCode: '',
+            userCode: '4',
             userType: UserType.GENERAL,
             userName: '',
             avatar: '',
@@ -117,16 +153,16 @@ export const table: Table = {
     taskId: '',
     taskType: TaskType.LEASE,
     west: {
-        extraList: [],
+        extraList: mahjongList,
         isPublic: false,
         isReady: false,
-        outList: [],
+        outList: mahjongList,
         points: 0,
         position: Position.WEST,
-        publicList: [],
+        publicList: mahjongList,
         step: 0,
         user: {
-            userCode: '',
+            userCode: '3',
             userType: UserType.GENERAL,
             userName: '',
             avatar: '',

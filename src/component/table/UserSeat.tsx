@@ -1,19 +1,8 @@
 import Card from "./Card.tsx";
-import {Mahjong, Position} from "../../domain/Task.ts";
-import {LeaseStats} from "rsocket-core";
+import {SeatProps} from "../../domain/Table.ts";
 
-type SeatProps = {
-    extra : Array<Mahjong>,
-    publicList: Array<Mahjong>,
-    out: Array<Mahjong>,
-    seat: 'top' | 'bottom' | 'left' | 'right';
-    position: Position;
-    leaseStatus :LeaseStats,
-    point: number,
-    isPublic: boolean,
-};
-
-function UserSeat({out,publicList,extra,seat}: SeatProps) {
+function UserSeat({props}: { props: SeatProps }) {
+    const seat = props.seat;
     const isHorizontal = seat === 'top' || seat === 'bottom';
     const direction = seat === 'top' ? 'column' : seat === 'bottom' ? 'column-reverse' : seat === 'left' ? 'row' : 'row-reverse';
     const isLeft = seat === 'left';
@@ -32,7 +21,7 @@ function UserSeat({out,publicList,extra,seat}: SeatProps) {
                         flexDirection: isHorizontal ? 'row' : 'column',
                     }}>
                         {
-                            extra.map((item) => (
+                            props.extraList.sort((a, b) => a.number - b.number).map((item) => (
                                 <Card key={item.order} value={item.number} isHorizontal={isHorizontal} isLeft={isLeft}/>
                             ))
                         }
@@ -43,7 +32,7 @@ function UserSeat({out,publicList,extra,seat}: SeatProps) {
                     {/* 碰牌区域 */}
                     <div style={{display: 'flex', flexDirection: isHorizontal ? 'row' : 'column',}}>
                         {
-                            publicList.map((item) => (
+                            props.publicList.map((item) => (
                                 <Card key={item.order} value={item.number} isHorizontal={isHorizontal} isLeft={isLeft}/>
                             ))
                         }
@@ -51,14 +40,7 @@ function UserSeat({out,publicList,extra,seat}: SeatProps) {
                 </div>
 
                 <div style={{margin: '5px', display: 'flex',}}>
-                    {/* 亍牌区域 */}
-                    <div style={{display: 'flex', flexDirection: isHorizontal ? 'row' : 'column',}}>
-                        {
-                            out.map((item) => (
-                                <Card key={item.order} value={item.number} isHorizontal={isHorizontal} isLeft={isLeft}/>
-                            ))
-                        }
-                    </div>
+
                 </div>
             </div>
         </>
