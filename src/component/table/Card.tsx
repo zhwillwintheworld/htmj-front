@@ -38,6 +38,7 @@ type CardProps = {
 };
 
 const getImg = (value: number) => {
+    value = 0
     switch (value) {
         case 0:
             return back
@@ -96,7 +97,7 @@ const getImg = (value: number) => {
         case 29:
             return jiutong
         default:
-            return yiwan
+            return back
     }
 }
 
@@ -141,7 +142,6 @@ function Card({value, isHorizontal, isLeft, isSelected, onSelect, onConfirm}: Ca
                         onMouseEnter={() => console.log('Hovering!')
                         }
                         onClick={handleClick}
-
                     >
                         <img src={getImg(value)} style={{
                             width: '30px',

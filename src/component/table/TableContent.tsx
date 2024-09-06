@@ -24,8 +24,9 @@ const getNextSeat = (table: Table, position: Position): Seat => {
 
 function TableContent() {
     const location = useLocation();
-    const tasks = useContext(TableContext);
-    if (tasks == null) {
+    const tableProps = useContext(TableContext);
+    if (tableProps == null) {
+        console.log('tableProps is null')
         return <div>加载中...</div>
     }
     const queryParams = new URLSearchParams(location.search);
@@ -33,53 +34,40 @@ function TableContent() {
     if (userCode == null) {
         return <div>加载中...</div>
     }
+    const table = tableProps.table
     let currentSeat: Seat;
-    if (tasks.east.user.userCode == userCode) {
-        currentSeat = tasks.east;
-    } else if (tasks.north.user.userCode == userCode) {
-        currentSeat = tasks.north;
-    } else if (tasks.south.user.userCode == userCode) {
-        currentSeat = tasks.south;
-    } else if (tasks.west.user.userCode == userCode) {
-        currentSeat = tasks.west;
+    if (table.east.user.userCode == userCode) {
+        currentSeat = table.east;
+    } else if (table.north.user.userCode == userCode) {
+        currentSeat = table.north;
+    } else if (table.south.user.userCode == userCode) {
+        currentSeat = table.south;
+    } else if (table.west.user.userCode == userCode) {
+        currentSeat = table.west;
     } else {
         return <div>加载中...</div>
     }
-    const bottomList = currentSeat.outList
     const bottom: SeatProps = {
         ...currentSeat,
         seat: 'bottom',
-        leaseStatus: null
     }
-    let nextSeat = getNextSeat(tasks, currentSeat.position);
-    const rightList = nextSeat.outList
+    let nextSeat = getNextSeat(table, currentSeat.position);
     const right: SeatProps = {
         ...nextSeat,
         seat: 'right',
-        leaseStatus: null
     }
-    nextSeat = getNextSeat(tasks, nextSeat.position);
-    const topList = nextSeat.outList
+    nextSeat = getNextSeat(table, nextSeat.position);
     const top: SeatProps = {
         ...nextSeat,
         seat: 'top',
-        leaseStatus: null
     }
-    nextSeat = getNextSeat(tasks, nextSeat.position);
-    const leftList = nextSeat.outList
+    nextSeat = getNextSeat(table, nextSeat.position);
     const left: SeatProps = {
         ...nextSeat,
         seat: 'left',
-        leaseStatus: null
     }
     const center: CenterProps = {
-        bottomList: bottomList,
-        leftList: leftList,
-        mahjong: null,
-        position: Position.EAST,
-        rightList: rightList,
-        topList: topList,
-        randomNumber: tasks.randomNumber
+        randomNumber: table.randomNumber
     }
     return (
         <>

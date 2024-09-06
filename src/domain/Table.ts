@@ -1,5 +1,4 @@
-import {Mahjong, Position, UserDTO} from "./Task.ts";
-import {LeaseStats} from "rsocket-core";
+import {LeaseStatus, Mahjong, Position, UserDTO} from "./Task.ts";
 
 interface Seat {
     // 用户信息
@@ -12,6 +11,8 @@ interface Seat {
     publicList: Array<Mahjong>,
     // 出牌
     outList: Array<Mahjong>,
+    // 新上牌
+    catch: Mahjong | null,
     // 分数
     points: number,
     // 下了多少手
@@ -75,32 +76,36 @@ interface SeatProps {
     outList: Array<Mahjong>,
     seat: 'top' | 'bottom' | 'left' | 'right';
     position: Position;
-    leaseStatus: LeaseStats | null,
     points: number,
     isPublic: boolean,
     user: UserDTO,
     // 下了多少手
     step: number,
-    tableId: string,
-    tableStep: number,
-    taskId: string,
+}
+
+interface TableProps {
+    // 公用
+    table: Table,
+    timeLimit: number,
+    taskId: string | null,
+    leaseNumber: number,
+    // 对当前用户而言
+    leaseStatus: Array<LeaseStatus>,
+    canOut: boolean,
+    canLease: boolean,
+    // 公共展示
+    displayMahjong: Mahjong | null,
+    displayLeaseStatus: LeaseStatus | null,
 }
 
 interface CenterProps {
-    topList: Array<Mahjong>,
-    bottomList: Array<Mahjong>,
-    leftList: Array<Mahjong>,
-    rightList: Array<Mahjong>,
-    position: Position,
-    mahjong: Mahjong | null,
     randomNumber: number,
 }
 
 export {
-
     TaskType, SupplierType
 }
 
 export type {
-    Table, Seat, SeatProps, CenterProps
+    Table, Seat, SeatProps, CenterProps, TableProps
 }

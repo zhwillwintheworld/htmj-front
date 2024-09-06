@@ -26,7 +26,7 @@ import {Buffer} from 'buffer';
 import {ISubscriber, Payload} from "rsocket-types";
 import {Flowable} from "rsocket-flowable";
 import {useContext, useRef} from "react";
-import { MessageContext } from '../config/MessageContext.ts';
+import {MessageContext} from '../config/MessageContext.ts';
 import {makeInitTaskMessage, makeMessage, makeTaskPayload} from "./util/MessageUtil.ts";
 
 if (typeof window !== 'undefined') {
@@ -39,6 +39,7 @@ const lifetime = 180000;
 const dataMimeType = 'application/json';
 const metadataMimeType = MESSAGE_RSOCKET_COMPOSITE_METADATA.string;
 const route = 'im.v1.setup';
+
 function Chat() {
     const location = useLocation();
     const subscriberRef = useRef<ISubscriber<Payload<Buffer, Buffer>> | null>(null);
@@ -52,18 +53,21 @@ function Chat() {
             const messageContent = message.message.content as MahjongMessage;
             let body
             switch (messageContent.event) {
+                // 解决初始化
                 case MahjongMessageEvent.INIT_RESPONSE:
                     body = messageContent.content as MahjongInitResponseMessage;
                     console.log('收到初始化响应，出牌人为')
-                    dispatch({type: 'SET_TABLE', payload: body.table})
+                    dispatch({type: 'INIT', payload: body.table})
                     break;
+                // 解决出牌
                 case MahjongMessageEvent.OUT_RESPONSE:
                     body = messageContent.content as MahjongOutResponseMessage;
                     console.log('收到出牌响应，出牌人为' + body.position)
-                    dispatch({type: 'SET_TABLE', payload: body.table})
+                    dispatch({type: 'OUT', payload: body})
                     break
                 case MahjongMessageEvent.CHANGE_RESPONSE:
                     body = messageContent.content as MahjongChangeResponseMessage;
+                    dispatch({type: 'CHANGE', payload: body, userCode: userCode!})
                     console.log('收到切换响应，响应人为' + body.position)
                     break
                 case MahjongMessageEvent.END_RESPONSE:
@@ -74,11 +78,13 @@ function Chat() {
                     break
                 case MahjongMessageEvent.LEASE_RESPONSE:
                     body = messageContent.content as MahjongLeaseResponseMessage;
-                    console.log('收到响应的LEASE_RESPONSE，响应人为' + body.happenedUser.position)
+                    dispatch({type: 'LEASE', payload: body})
+                    console.log('收到响应的LEASE_RESPONSE，响应人为' + body.happenedUser)
                     break
                 case MahjongMessageEvent.SEND_LEASE_RESPONSE:
                     body = messageContent.content as MahjongSendLeaseResponseMessage;
-                    console.log('收到发送的LEASE_RESPONSE，响应人为')
+                    dispatch({type: 'SEND_LEASE', payload: body})
+                    console.log('收到发送的LEASE_RESPONSE，响应人为自己')
                     break
             }
             console.log(body)
@@ -175,7 +181,7 @@ function Chat() {
             } else {
                 console.log('subscriberRef.current != null')
             }
-            subscriberRef.current?.onNext(makeTaskPayload(makeMessage(userCode, userCode,makeInitTaskMessage())))
+            subscriberRef.current?.onNext(makeTaskPayload(makeMessage(userCode, userCode, makeInitTaskMessage())))
             console.log("发送了消息")
         },
         error => {
@@ -189,7 +195,7 @@ function Chat() {
         <>
             <div>
                 <MessageContext.Provider value={subscriberRef.current}>
-                <Dashboard></Dashboard>
+                    <Dashboard></Dashboard>
                 </MessageContext.Provider>
             </div>
         </>

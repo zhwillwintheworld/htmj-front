@@ -1,4 +1,4 @@
-import {Seat, SupplierType, Table} from "./Table.ts";
+import {SupplierType, Table} from "./Table.ts";
 
 interface ClientRequest {
     traceId: string;
@@ -41,7 +41,7 @@ interface MahjongMessage {
     event: MahjongMessageEvent;
     content: MahjongInitRequestMessage | MahjongOutResponseMessage | MahjongInitResponseMessage |
         MahjongChangeResponseMessage | MahjongSendLeaseResponseMessage | MahjongLeaseResponseMessage
-        | MahjongEndResponseMessage | MahjongErrorResponseMessage | MahjongOutRequestMessage
+        | MahjongEndResponseMessage | MahjongErrorResponseMessage | MahjongOutRequestMessage | MahjongLeaseRequestMessage
 }
 
 interface TextMessage {
@@ -81,6 +81,15 @@ interface MahjongOutRequestMessage {
     taskId: string,
 }
 
+// 反应请求
+interface MahjongLeaseRequestMessage {
+    tableId: string,
+    status: LeaseStatus,
+    leaseNumber: number,
+    position: Position,
+    taskId: string,
+}
+
 interface MahjongInitResponseMessage {
     timeLimit: number,
     table: Table,
@@ -90,14 +99,14 @@ interface MahjongInitResponseMessage {
 interface MahjongOutResponseMessage {
     position: Position,
     mahjong: Mahjong,
-    table: Table,
 }
 
 interface MahjongChangeResponseMessage {
     timeLimit: number,
     position: Position,
-    mahjong: Mahjong,
-    taskId: string,
+    mahjong: Mahjong | null,
+    taskId: string | null,
+    step: number
 }
 
 // 发送租约 响应
@@ -114,10 +123,9 @@ interface MahjongSendLeaseResponseMessage {
 interface MahjongLeaseResponseMessage {
     status: LeaseStatus,
     leaseNumber: number,
-    happenedUser: Seat,
+    happenedUser: Position,
     receiveUser: Array<Position>,
     mahjong: Mahjong,
-    table: Table
 }
 
 // 结束响应
@@ -231,10 +239,11 @@ enum UserType {
     MANAGER = 'MANAGER',
 }
 
+
 export {
     ServerMessageType, MahjongMessageType,
     MahjongMessageEvent, Position, UserType,
-    PLATFORM, CommunicateType
+    PLATFORM, CommunicateType, LeaseStatus
 };
 export type {
     ClientRequest,

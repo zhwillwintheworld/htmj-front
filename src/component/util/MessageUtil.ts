@@ -1,10 +1,14 @@
 import {
     ClientRequest,
-    CommunicateType, MahjongMessage,
+    CommunicateType,
+    LeaseStatus,
+    MahjongMessage,
     MahjongMessageEvent,
     MahjongMessageType,
-    PLATFORM, Position,
-    ServerMessageType, UserType
+    PLATFORM,
+    Position,
+    ServerMessageType,
+    UserType
 } from "../../domain/Task.ts";
 import {Payload} from "rsocket-types";
 import {Buffer} from "buffer";
@@ -19,7 +23,7 @@ export const makeTaskPayload = (clientRequest: ClientRequest): Payload<Buffer, B
     }
 }
 export const makeOutTaskMessage = (number: number, order: number, position: Position,
-                                   tableId: string, taskId: string, tableStep: number, seatStep: number): MahjongMessage => {
+                                   tableId: string, taskId: string, tableStep: number): MahjongMessage => {
     return {
         type: MahjongMessageType.REQUEST,
         event: MahjongMessageEvent.OUT_REQUEST,
@@ -32,7 +36,24 @@ export const makeOutTaskMessage = (number: number, order: number, position: Posi
             tableId,
             taskId,
             tableStep,
-            seatStep,
+        },
+    }
+}
+
+export const makeLeaseTaskMessage = (tableId: string,
+                                     status: LeaseStatus,
+                                     leaseNumber: number,
+                                     position: Position,
+                                     taskId: string): MahjongMessage => {
+    return {
+        type: MahjongMessageType.REQUEST,
+        event: MahjongMessageEvent.LEASE_REQUEST,
+        content: {
+            tableId,
+            status,
+            leaseNumber,
+            position,
+            taskId
         },
     }
 }
