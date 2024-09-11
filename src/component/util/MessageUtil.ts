@@ -64,28 +64,28 @@ export const makeInitTaskMessage = (): MahjongMessage => {
             seatInfo: {
                 east: {
                     userCode: '1',
-                    userName: '',
+                    userName: '华少神临',
                     nickName: '',
                     avatar: '',
                     userType: UserType.MANAGER
                 },
                 south: {
                     userCode: '2',
-                    userName: '',
+                    userName: '许馨元',
                     nickName: '',
                     avatar: '',
                     userType: UserType.MANAGER
                 },
                 west: {
                     userCode: '3',
-                    userName: '',
+                    userName: '张梓婷',
                     nickName: '',
                     avatar: '',
                     userType: UserType.MANAGER
                 },
                 north: {
                     userCode: '4',
-                    userName: '',
+                    userName: '小胡',
                     nickName: '',
                     avatar: '',
                     userType: UserType.MANAGER

@@ -83,7 +83,7 @@ function TableContent() {
                 backgroundColor: '#004d4c',
                 gap: '10px',
                 width: '100vw',
-                height: '100vh'
+                height: '104vh'
             }}>
                 <div style={{
                     gridArea: 'top', height: '30vh', justifyContent: 'center',

@@ -1,12 +1,11 @@
 import Card from "./Card.tsx";
 import {SeatProps} from "../../domain/Table.ts";
 import {Avatar} from "antd";
-import {UserOutlined} from '@ant-design/icons';
-import {useContext, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {TableContext} from "../../config/TableContext.ts";
 import {MessageContext} from "../../config/MessageContext.ts";
 import {makeMessage, makeOutTaskMessage, makeTaskPayload} from "../util/MessageUtil.ts";
-import {Mahjong} from "../../domain/Task.ts";
+import {Mahjong, Position} from "../../domain/Task.ts";
 
 function UserSeat({props}: { props: SeatProps }) {
     const tableProps = useContext(TableContext)!;
@@ -15,7 +14,13 @@ function UserSeat({props}: { props: SeatProps }) {
         console.log("message is null")
     }
     const table = tableProps.table!
-    const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(null); // 用于跟踪选中的 card
+    const [selectedCardIndex, setSelectedCardIndex] = useState<number>(-1); // 用于跟踪选中的 card
+
+    useEffect(() => {
+        if (!tableProps.canOut) {
+            setSelectedCardIndex(-1)
+        }
+    }, [tableProps.canOut])
     const handleSelect = (index: number) => {
         if (!tableProps.canOut) {
             return;
@@ -53,9 +58,26 @@ function UserSeat({props}: { props: SeatProps }) {
                 alignItems: 'center',
                 backgroundColor: isSelf ? 'rgba(5,196,199,0.76)' : '#004d4c',
             }}>
-                <div style={{display: 'flex', margin: '20px'}}>
+                <div style={{display: 'flex', margin: '20px',justifyContent: 'center',alignItems: 'center',
+                    flexDirection: isHorizontal ? 'row' : 'column',
+
+                }}>
                     {/* 头像区域 */}
-                    <Avatar style={{backgroundColor: '#87d068'}} icon={<UserOutlined/>}/>
+                    <div>
+                        <Avatar style={{backgroundColor: '#87d068'}}
+                                size={45}
+                                // icon={<UserOutlined/>}>
+                            >
+                            {props.user.userName}
+                        </Avatar>
+                    </div>
+
+                    <div style={{margin: '15px',color: 'white'}}>
+                        积分： {props.points}
+                    </div>
+                    <div style={{margin: '10px',color: 'white'}}>
+                        方位：{props.position == Position.EAST ? '东' : props.position == Position.SOUTH ? '南' : props.position == Position.WEST ? '西' : '北'}
+                    </div>
 
                 </div>
                 <div style={{display: 'flex',}}>
