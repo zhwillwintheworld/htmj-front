@@ -1,10 +1,11 @@
-import React, {createContext, useContext} from 'react';
-import {Table, TableProps, TaskType} from "../domain/Table.ts";
+import React, {createContext} from 'react';
+import {TableProps, TaskType} from "../domain/Table.ts";
 import {
+    Color,
     LeaseStatus,
     MahjongChangeResponseMessage,
     MahjongEndResponseMessage,
-    MahjongErrorResponseMessage,
+    MahjongErrorResponseMessage, MahjongInitResponseMessage,
     MahjongLeaseResponseMessage,
     MahjongOutResponseMessage,
     MahjongSendLeaseResponseMessage,
@@ -24,15 +25,7 @@ export const TableChangeContext = createContext<React.Dispatch<Action> | null>(n
 
 // 上下文提供者组件
 // 定义 TasksProvider 组件
-export function useTasks() {
-    return useContext(TableContext);
-}
-
-export function useTasksDispatch() {
-    return useContext(TableChangeContext);
-}
-
-type Action = { type: 'INIT'; payload: Table} |
+type Action = { type: 'INIT'; payload: MahjongInitResponseMessage, userCode: string} |
     { type: 'CHANGE'; payload: MahjongChangeResponseMessage, userCode: string } |
     { type: 'END'; payload: MahjongEndResponseMessage, userCode: string } |
     { type: 'OUT'; payload: MahjongOutResponseMessage } |
@@ -41,11 +34,10 @@ type Action = { type: 'INIT'; payload: Table} |
     { type: 'ERROR'; payload: MahjongErrorResponseMessage, userCode: string };
 
 export function tableReducer(tableProps: TableProps, action: Action) {
-    console.log(tableProps.table.tableId + "牌局发生了修改")
     switch (action.type) {
         // 重新初始化
         case 'INIT':
-            return initTableProp(action.payload);
+            return initTableProp(action.payload,action.userCode);
         case 'CHANGE':
             return changeTableProp(tableProps, action.payload,action.userCode)
         case "OUT":
@@ -60,40 +52,40 @@ export function tableReducer(tableProps: TableProps, action: Action) {
 }
 
 const mahjongList = [{
-    number: 1, order: 1
+    number: 1, order: 1,color: Color.WAN
 }, {
-    number: 1, order: 2
+    number: 1, order: 2,color: Color.WAN
 }, {
-    number: 1, order: 3
+    number: 1, order: 3,color: Color.WAN
 }, {
-    number: 1, order: 4
+    number: 1, order: 4,color: Color.WAN
 }, {
-    number: 1, order: 5
+    number: 1, order: 5,color: Color.WAN
 }, {
-    number: 1, order: 6
+    number: 1, order: 6,color: Color.WAN
 }, {
-    number: 1, order: 7
+    number: 1, order: 7,color: Color.WAN
 },
     {
-        number: 1, order: 8
+        number: 1, order: 8,color: Color.WAN
     },
     {
-        number: 1, order: 9
+        number: 1, order: 9,color: Color.WAN
     },
     {
-        number: 1, order: 10
+        number: 1, order: 10,color: Color.WAN
     },
     {
-        number: 1, order: 11
+        number: 1, order: 11,color: Color.WAN
     },
     {
-        number: 1, order: 12
+        number: 1, order: 12,color: Color.WAN
     },
     {
-        number: 1, order: 13
+        number: 1, order: 13,color: Color.WAN
     },
     {
-        number: 1, order: 14
+        number: 1, order: 14,color: Color.WAN
     },]
 export const table: TableProps = {
     table: {
@@ -211,9 +203,9 @@ export const table: TableProps = {
     taskId: '',
     timeLimit: 0,
     leaseNumber: 0,
-    leaseStatus: [LeaseStatus.HU, LeaseStatus.NONE,LeaseStatus.GANG, LeaseStatus.PENG],
+    leaseStatus: [LeaseStatus.PENG],
     canOut: false,
-    canLease: false,
+    canLease: true,
     displayLeaseStatus: null,
     displayMahjong: null
 }

@@ -25,8 +25,8 @@ import RSocketWebSocketClient from 'rsocket-websocket-client';
 import {Buffer} from 'buffer';
 import {ISubscriber, Payload} from "rsocket-types";
 import {Flowable} from "rsocket-flowable";
-import {useContext, useRef} from "react";
-import {MessageContext} from '../config/MessageContext.ts';
+import {useCallback, useContext, useEffect, useMemo, useState} from "react";
+import {MessageChangeContext} from '../config/MessageContext.ts';
 import {makeInitTaskMessage, makeMessage, makeTaskPayload} from "./util/MessageUtil.ts";
 
 if (typeof window !== 'undefined') {
@@ -41,13 +41,33 @@ const metadataMimeType = MESSAGE_RSOCKET_COMPOSITE_METADATA.string;
 const route = 'im.v1.setup';
 
 function Chat() {
-    const location = useLocation();
-    const subscriberRef = useRef<ISubscriber<Payload<Buffer, Buffer>> | null>(null);
-    const dispatch = useContext(TableChangeContext)
-    if (dispatch == null) {
-        return <Dashboard/>
+    const location = useLocation()
+    const [subscriber, setSubscriber] = useState<ISubscriber<Payload<Buffer, Buffer>> | null>(null)
+    const dispatch = useContext(TableChangeContext)!
+    const messageDispatch = useContext(MessageChangeContext)!
+    const queryParams = new URLSearchParams(location.search)
+    let userCode = queryParams.get('userCode');
+    if (userCode == null) {
+        userCode = ''
     }
-    const processMessage = (payload: Payload<Buffer, Buffer>) => {
+    let token = '';
+    if ('1' == userCode) {
+        token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdWRvb29tLmNvbSIsInN1YiI6Imh0bWoiLCJ1c2VyQ29kZSI6IjEifQ.tQ9BoTNtn6WliSf9F_ha9F58Q6VD6aP78EOw9BFTHb8'
+    } else if ('2' == userCode) {
+        token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdWRvb29tLmNvbSIsInN1YiI6Imh0bWoiLCJ1c2VyQ29kZSI6IjIifQ.bZ4N09E092HyWzdvNgfENrUKDsF5z7mMEYF6NpXksq8'
+    } else if ('3' == userCode) {
+        token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdWRvb29tLmNvbSIsInN1YiI6Imh0bWoiLCJ1c2VyQ29kZSI6IjMifQ.zoYb5FPX3IhQD03t99wEGJL7drPKeeOo5TsDXvC9vEA'
+    } else if ('4' == userCode) {
+        token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdWRvb29tLmNvbSIsInN1YiI6Imh0bWoiLCJ1c2VyQ29kZSI6IjQifQ.YIj5vBszPsmBWT5CtapVF45Lfoe9SrUX8mgB_OlXw4o'
+    }
+
+    const connInfo = useMemo(() => ({
+        token,
+        platform: 'WEB',
+        userCode
+    }), [token, userCode])
+
+    const processMessage = useCallback((payload: Payload<Buffer, Buffer>) => {
         const message = JSON.parse(payload.data?.toString() as string);
         if (message.message != null && message.message.type == ServerMessageType.MAHJONG) {
             const messageContent = message.message.content as MahjongMessage;
@@ -57,7 +77,7 @@ function Chat() {
                 case MahjongMessageEvent.INIT_RESPONSE:
                     body = messageContent.content as MahjongInitResponseMessage;
                     console.log('收到初始化响应，出牌人为')
-                    dispatch({type: 'INIT', payload: body.table})
+                    dispatch({type: 'INIT', payload: body, userCode})
                     break;
                 // 解决出牌
                 case MahjongMessageEvent.OUT_RESPONSE:
@@ -89,114 +109,96 @@ function Chat() {
             }
             console.log(body)
         }
-    }
-
-    const queryParams = new URLSearchParams(location.search);
-    let userCode = queryParams.get('userCode');
-    if (userCode == null) {
-        userCode = ''
-    }
-    let token = '';
-    if ('1' == userCode) {
-        token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdWRvb29tLmNvbSIsInN1YiI6Imh0bWoiLCJ1c2VyQ29kZSI6IjEifQ.tQ9BoTNtn6WliSf9F_ha9F58Q6VD6aP78EOw9BFTHb8'
-    } else if ('2' == userCode) {
-        token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdWRvb29tLmNvbSIsInN1YiI6Imh0bWoiLCJ1c2VyQ29kZSI6IjIifQ.bZ4N09E092HyWzdvNgfENrUKDsF5z7mMEYF6NpXksq8'
-    } else if ('3' == userCode) {
-        token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdWRvb29tLmNvbSIsInN1YiI6Imh0bWoiLCJ1c2VyQ29kZSI6IjMifQ.zoYb5FPX3IhQD03t99wEGJL7drPKeeOo5TsDXvC9vEA'
-    } else if ('4' == userCode) {
-        token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdWRvb29tLmNvbSIsInN1YiI6Imh0bWoiLCJ1c2VyQ29kZSI6IjQifQ.YIj5vBszPsmBWT5CtapVF45Lfoe9SrUX8mgB_OlXw4o'
-    }
-
-    const connInfo = {
-        token,
-        platform: 'WEB',
-        userCode
-    }
-
-    const client = new RSocketClient<Buffer, Buffer>({
-        setup: {
-            dataMimeType,
-            keepAlive,
-            lifetime,
-            metadataMimeType,
-            payload: {
-                data: Buffer.from(JSON.stringify(connInfo)),
-                metadata: encodeCompositeMetadata([
-                    [MESSAGE_RSOCKET_ROUTING, encodeRoute(route)]
-                ]),
+    }, [dispatch, userCode])
+    const requestFlowable = new Flowable<Payload<Buffer, Buffer>>((subscriber) => {
+        setSubscriber(subscriber)
+        messageDispatch({type: 'SET', payload: subscriber})
+        subscriber.onSubscribe({
+            request: (n) => {
+                console.log('request', n);
+                console.log("发送了消息，n = " + n)
             },
-        },
-        transport: new RSocketWebSocketClient(
-            {
-                debug: true,
-                url: 'ws://localhost:8082',
+            cancel: () => {
+                // 取消task stream
+                setSubscriber(null);
+                console.log('cancel');
             },
-            BufferEncoders,
-        ),
+        });
+        // 这里可以开始 emit 初始数据或在外部通过 subscriberRef 来 emit 数据
     });
-    // Open the connection
-    client.connect().then(
-        socket => {
-            socket.connectionStatus().subscribe(event => console.log(event));
-            socket
-                .requestStream({
+
+    useEffect(() => {
+        const client = new RSocketClient<Buffer, Buffer>({
+            setup: {
+                dataMimeType,
+                keepAlive,
+                lifetime,
+                metadataMimeType,
+                payload: {
                     data: Buffer.from(JSON.stringify(connInfo)),
                     metadata: encodeCompositeMetadata([
-                        [MESSAGE_RSOCKET_ROUTING, encodeRoute("im.v1.stream")],
+                        [MESSAGE_RSOCKET_ROUTING, encodeRoute(route)]
                     ]),
-                })
-                .subscribe({
-                    // eslint-disable-next-line no-console
-                    onComplete: () => console.log('Request-stream completed'),
+                },
+            },
+            transport: new RSocketWebSocketClient(
+                {
+                    debug: true,
+                    url: 'ws://localhost:8082',
+                },
+                BufferEncoders,
+            ),
+        });
+        // Open the connection
+        client.connect().then(
+            socket => {
+                socket.connectionStatus().subscribe(event => console.log(event));
+                socket
+                    .requestStream({
+                        data: Buffer.from(JSON.stringify(connInfo)),
+                        metadata: encodeCompositeMetadata([
+                            [MESSAGE_RSOCKET_ROUTING, encodeRoute("im.v1.stream")],
+                        ]),
+                    })
+                    .subscribe({
+                        // eslint-disable-next-line no-console
+                        onComplete: () => console.log('Request-stream completed'),
+                        onError: error =>
+                            console.error(`Request-stream error:${error.message}`),
+                        // eslint-disable-next-line no-console
+                        onNext: value => processMessage(value),
+                        onSubscribe: sub => sub.request(maxRSocketRequestN),
+                    });
+                socket.requestChannel(requestFlowable).subscribe({
+                    onComplete: () => console.log('Request-channel completed'),
                     onError: error =>
-                        console.error(`Request-stream error:${error.message}`),
-                    // eslint-disable-next-line no-console
-                    onNext: value => processMessage(value),
+                        console.error(`Request-channel error:${error.message}`),
+                    onNext: () => {
+                    },
                     onSubscribe: sub => sub.request(maxRSocketRequestN),
                 });
-            const requestFlowable = new Flowable<Payload<Buffer, Buffer>>((subscriber) => {
-                subscriberRef.current = subscriber;
-                subscriber.onSubscribe({
-                    request: (n) => {
-                        console.log('request', n);
-                        console.log("发送了消息，n = " + n)
-                    },
-                    cancel: () => {
-                        // 取消task stream
-                        subscriberRef.current = null;
-                        console.log('cancel');
-                    },
-                });
-                // 这里可以开始 emit 初始数据或在外部通过 subscriberRef 来 emit 数据
-            });
-            socket.requestChannel(requestFlowable).subscribe({
-                onComplete: () => console.log('Request-channel completed'),
-                onError: error =>
-                    console.error(`Request-channel error:${error.message}`),
-                onNext: value => console.log('传来了数据 %s %s', value.data, value.metadata),
-                onSubscribe: sub => sub.request(maxRSocketRequestN),
-            });
-            if (subscriberRef.current == null) {
-                console.log('subscriberRef.current == null')
-            } else {
-                console.log('subscriberRef.current != null')
-            }
-            subscriberRef.current?.onNext(makeTaskPayload(makeMessage(userCode, userCode, makeInitTaskMessage())))
-            console.log("发送了消息")
-        },
-        error => {
-            // handle connection error
-            // eslint-disable-next-line no-console
-            console.log('error:', error);
-        },
-    );
+
+            },
+            error => {
+                // handle connection error
+                // eslint-disable-next-line no-console
+                console.log('error:', error);
+            },
+        );
+    }, [connInfo, processMessage])
+
+    if (subscriber == null) {
+        console.log("subscriber == null")
+    } else {
+        console.log("subscriber != null")
+        subscriber.onNext(makeTaskPayload(makeMessage(userCode, token, makeInitTaskMessage())))
+    }
+
 
     return (
         <>
             <div>
-                <MessageContext.Provider value={subscriberRef.current}>
-                    <Dashboard></Dashboard>
-                </MessageContext.Provider>
+                <Dashboard></Dashboard>
             </div>
         </>
     )

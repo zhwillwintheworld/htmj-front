@@ -1,45 +1,42 @@
 import Card from "./Card.tsx";
 import {SeatProps} from "../../domain/Table.ts";
-import {Avatar, Button, Modal} from "antd";
+import {Avatar} from "antd";
 import {UserOutlined} from '@ant-design/icons';
 import {useContext, useState} from "react";
 import {TableContext} from "../../config/TableContext.ts";
 import {MessageContext} from "../../config/MessageContext.ts";
-import {makeLeaseTaskMessage, makeMessage, makeOutTaskMessage, makeTaskPayload} from "../util/MessageUtil.ts";
-import {LeaseStatus} from "../../domain/Task.ts";
+import {makeMessage, makeOutTaskMessage, makeTaskPayload} from "../util/MessageUtil.ts";
+import {Mahjong} from "../../domain/Task.ts";
 
 function UserSeat({props}: { props: SeatProps }) {
     const tableProps = useContext(TableContext)!;
     const message = useContext(MessageContext)
+    if (message == null) {
+        console.log("message is null")
+    }
     const table = tableProps.table!
     const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(null); // 用于跟踪选中的 card
-    const [isModalOpen, setIsModalOpen] = useState(true)
     const handleSelect = (index: number) => {
         if (!tableProps.canOut) {
             return;
         }
         setSelectedCardIndex(index); // 更新选中的 card
     };
-
-    const handleLease = (leaseStatus: LeaseStatus) => {
-        if (!tableProps.canLease) {
-            return;
-        }
-        message?.onNext(makeTaskPayload(makeMessage(props.user.userCode, "1", makeLeaseTaskMessage(
-            table.tableId, leaseStatus, tableProps.leaseNumber, props.position, tableProps.taskId!)
-        )))
-        setIsModalOpen(false)
-    };
-    const handleConfirm = (index: number, order: number) => {
+    const handleConfirm = (it: Mahjong) => {
         if (!tableProps.canOut) {
             return;
         }
-        message?.onNext(makeTaskPayload(makeMessage(props.user.userCode, "1", makeOutTaskMessage(
-            index, order, props.position,
+        const messageContent = makeMessage(props.user.userCode, "1", makeOutTaskMessage(
+            it, props.position,
             table.tableId, tableProps.taskId!,
             table.step
-        ))))
-        console.log(`Card ${index + 1} confirmed!`);
+        ))
+        // 去除选中
+        setSelectedCardIndex(-1)
+        console.log("消息发送器状态是否为空" + message == null)
+        console.log("消息体为" + JSON.stringify(messageContent))
+        message?.onNext(makeTaskPayload(messageContent))
+        console.log(`Card ${it.number} confirmed!`);
     };
     const currentSeat = table.currentSeat;
     const isSelf = currentSeat.user.userCode === props.user.userCode;
@@ -54,7 +51,7 @@ function UserSeat({props}: { props: SeatProps }) {
                 flexDirection: direction,
                 justifyContent: 'center',
                 alignItems: 'center',
-                backgroundColor: isSelf ? '#4D4700' : '#004d4c',
+                backgroundColor: isSelf ? 'rgba(5,196,199,0.76)' : '#004d4c',
             }}>
                 <div style={{display: 'flex', margin: '20px'}}>
                     {/* 头像区域 */}
@@ -72,11 +69,21 @@ function UserSeat({props}: { props: SeatProps }) {
                                 <Card key={item.order} value={item.number} isHorizontal={isHorizontal} isLeft={isLeft}
                                       isSelected={selectedCardIndex === item.order}
                                       onSelect={() => handleSelect(item.order)}
-                                      onConfirm={() => handleConfirm(item.number, item.order)}
+                                      onConfirm={() => handleConfirm(item)}
                                 />
                             ))
                         }
+                        {
+                            props.catch ? (
+                                <Card key={props.catch.order} value={props.catch.number} isHorizontal={isHorizontal}
+                                      isLeft={isLeft}
+                                      isSelected={selectedCardIndex === props.catch.order}
+                                      onSelect={() => handleSelect(props.catch!.order)}
+                                      onConfirm={() => handleConfirm(props.catch!)}/>
+                            ) : <></>
+                        }
                     </div>
+
                 </div>
 
                 <div style={{margin: '30px', display: 'flex',}}>
@@ -95,28 +102,6 @@ function UserSeat({props}: { props: SeatProps }) {
                 </div>
 
                 <div style={{margin: '5px', display: 'flex',}}>
-
-                    <Modal title="做出你的选择" open={isModalOpen} footer={null}>
-                        <div style={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                        }}>
-                            {
-                                tableProps.leaseStatus?.map(
-                                    (item) => (
-                                        <Button onClick={() => handleLease(item)} type="primary"
-                                                style={{marginLeft: '10px'}}>
-                                            <span>{
-                                                item === LeaseStatus.PUBLIC ? '报听' : item === LeaseStatus.PENG ? '碰' : item === LeaseStatus.HU ? '胡' : item === LeaseStatus.NONE ? '不要' : '杠'
-                                            }</span>
-                                        </Button>
-                                    )
-                                )
-                            }
-                        </div>
-                    </Modal>
                 </div>
             </div>
         </>

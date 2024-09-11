@@ -81,6 +81,7 @@ interface SeatProps {
     user: UserDTO,
     // 下了多少手
     step: number,
+    catch: Mahjong | null
 }
 
 interface TableProps {
@@ -100,10 +101,12 @@ interface TableProps {
 
 interface CenterProps {
     randomNumber: number,
+    displayUserCode: string,
+    displayUserPosition: Position,
 }
 
 export {
-    TaskType, SupplierType
+    TaskType, SupplierType,
 }
 
 export type {

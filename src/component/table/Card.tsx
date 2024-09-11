@@ -38,7 +38,6 @@ type CardProps = {
 };
 
 const getImg = (value: number) => {
-    value = 0
     switch (value) {
         case 0:
             return back
@@ -110,8 +109,6 @@ function Card({value, isHorizontal, isLeft, isSelected, onSelect, onConfirm}: Ca
         }
     };
     const rotate = !isHorizontal && isLeft ? 'rotate(90deg)' : !isHorizontal && !isLeft ? 'rotate(-90deg)' : 'rotate(0deg)'
-    const xy = isSelected ? !isHorizontal && isLeft ? 'translateX(20px)' : !isHorizontal && !isLeft ? 'translateX(-20px)' : 'translateY(20px)' : 'translateY(0px)'
-    const transform = `${rotate} ${xy}`
     return (
         <>
             <div style={
@@ -137,16 +134,15 @@ function Card({value, isHorizontal, isLeft, isSelected, onSelect, onConfirm}: Ca
                             padding: '0',
                             width: '100%',
                             height: '100%',
-                            transformOrigin: 'center'
+                            transformOrigin: 'center',
+                            transform: isSelected?'translateY(-20px)':'translateY(0)'
                         }}
-                        onMouseEnter={() => console.log('Hovering!')
-                        }
                         onClick={handleClick}
                     >
                         <img src={getImg(value)} style={{
                             width: '30px',
                             height: '42px',
-                            transform: transform
+                            transform: rotate
                         }} alt={"牌"}/>
 
                     </Button>

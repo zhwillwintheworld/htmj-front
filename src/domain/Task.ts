@@ -201,7 +201,8 @@ interface LoseDetail {
 
 interface Mahjong {
     number: number,
-    order: number
+    order: number,
+    color: Color
 }
 
 interface InitSeatDTO {
@@ -212,6 +213,17 @@ interface InitSeatDTO {
     openUser: Position,
 }
 
+enum Color {
+    // 万子
+    WAN = 'WAN',
+    // 条子
+    TIAO = 'TIAO',
+    // 饼子
+    BING = 'BING',
+    // 背部
+    BACKGROUND = 'BACKGROUND'
+
+}
 
 enum Position {
     EAST = 'EAST',
@@ -243,7 +255,7 @@ enum UserType {
 export {
     ServerMessageType, MahjongMessageType,
     MahjongMessageEvent, Position, UserType,
-    PLATFORM, CommunicateType, LeaseStatus
+    PLATFORM, CommunicateType, LeaseStatus, Color
 };
 export type {
     ClientRequest,

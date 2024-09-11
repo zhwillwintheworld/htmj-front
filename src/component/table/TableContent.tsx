@@ -67,7 +67,9 @@ function TableContent() {
         seat: 'left',
     }
     const center: CenterProps = {
-        randomNumber: table.randomNumber
+        randomNumber: table.randomNumber,
+        displayUserPosition: bottom.position,
+        displayUserCode: bottom.user.userCode,
     }
     return (
         <>

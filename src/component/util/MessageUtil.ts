@@ -1,7 +1,7 @@
 import {
     ClientRequest,
     CommunicateType,
-    LeaseStatus,
+    LeaseStatus, Mahjong,
     MahjongMessage,
     MahjongMessageEvent,
     MahjongMessageType,
@@ -22,20 +22,17 @@ export const makeTaskPayload = (clientRequest: ClientRequest): Payload<Buffer, B
         ]),
     }
 }
-export const makeOutTaskMessage = (number: number, order: number, position: Position,
+export const makeOutTaskMessage = (mahjong: Mahjong, position: Position,
                                    tableId: string, taskId: string, tableStep: number): MahjongMessage => {
     return {
         type: MahjongMessageType.REQUEST,
         event: MahjongMessageEvent.OUT_REQUEST,
         content: {
-            mahjong: {
-                number,
-                order,
-            },
+            mahjong,
             position,
             tableId,
             taskId,
-            tableStep,
+            step:tableStep,
         },
     }
 }
