@@ -92,6 +92,8 @@ function Chat() {
                     break
                 case MahjongMessageEvent.END_RESPONSE:
                     body = messageContent.content as MahjongEndResponseMessage;
+                    dispatch({type: 'END', payload: body, userCode: userCode!})
+                    console.log('收到结束响应，响应人为' + body.winner)
                     break
                 case MahjongMessageEvent.ERROR_RESPONSE:
                     body = messageContent.content as MahjongErrorResponseMessage;

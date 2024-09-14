@@ -1,4 +1,4 @@
-import {LeaseStatus, Mahjong, Position, UserDTO} from "./Task.ts";
+import {EndDetail, LeaseStatus, Mahjong, Position, UserDTO} from "./Task.ts";
 
 interface Seat {
     // 用户信息
@@ -97,6 +97,7 @@ interface TableProps {
     // 公共展示
     displayMahjong: Mahjong | null,
     displayLeaseStatus: LeaseStatus | null,
+    endDetail: EndDetail | null
 }
 
 interface CenterProps {

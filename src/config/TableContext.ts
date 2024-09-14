@@ -2,10 +2,11 @@ import React, {createContext} from 'react';
 import {TableProps, TaskType} from "../domain/Table.ts";
 import {
     Color,
-    LeaseStatus,
+    EndWay,
     MahjongChangeResponseMessage,
     MahjongEndResponseMessage,
-    MahjongErrorResponseMessage, MahjongInitResponseMessage,
+    MahjongErrorResponseMessage,
+    MahjongInitResponseMessage,
     MahjongLeaseResponseMessage,
     MahjongOutResponseMessage,
     MahjongSendLeaseResponseMessage,
@@ -14,6 +15,7 @@ import {
 } from "../domain/Task.js";
 import {
     changeTableProp,
+    endTableProp,
     initTableProp,
     leaseTableProp,
     outTableProp,
@@ -25,7 +27,7 @@ export const TableChangeContext = createContext<React.Dispatch<Action> | null>(n
 
 // 上下文提供者组件
 // 定义 TasksProvider 组件
-type Action = { type: 'INIT'; payload: MahjongInitResponseMessage, userCode: string} |
+type Action = { type: 'INIT'; payload: MahjongInitResponseMessage, userCode: string } |
     { type: 'CHANGE'; payload: MahjongChangeResponseMessage, userCode: string } |
     { type: 'END'; payload: MahjongEndResponseMessage, userCode: string } |
     { type: 'OUT'; payload: MahjongOutResponseMessage } |
@@ -37,55 +39,57 @@ export function tableReducer(tableProps: TableProps, action: Action) {
     switch (action.type) {
         // 重新初始化
         case 'INIT':
-            return initTableProp(action.payload,action.userCode);
+            return initTableProp(action.payload, action.userCode);
         case 'CHANGE':
-            return changeTableProp(tableProps, action.payload,action.userCode)
+            return changeTableProp(tableProps, action.payload, action.userCode)
         case "OUT":
             return outTableProp(tableProps, action.payload)
         case "LEASE":
             return leaseTableProp(tableProps, action.payload)
         case 'SEND_LEASE':
             return sendLeaseTableProp(tableProps, action.payload)
+        case "END":
+            return endTableProp(tableProps, action.payload)
         default:
             throw new Error(`Unhandled action type: ${action.type}`);
     }
 }
 
 const mahjongList = [{
-    number: 1, order: 1,color: Color.WAN
+    number: 1, order: 1, color: Color.WAN
 }, {
-    number: 1, order: 2,color: Color.WAN
+    number: 1, order: 2, color: Color.WAN
 }, {
-    number: 1, order: 3,color: Color.WAN
+    number: 1, order: 3, color: Color.WAN
 }, {
-    number: 1, order: 4,color: Color.WAN
+    number: 1, order: 4, color: Color.WAN
 }, {
-    number: 1, order: 5,color: Color.WAN
+    number: 1, order: 5, color: Color.WAN
 }, {
-    number: 1, order: 6,color: Color.WAN
+    number: 1, order: 6, color: Color.WAN
 }, {
-    number: 1, order: 7,color: Color.WAN
+    number: 1, order: 7, color: Color.WAN
 },
     {
-        number: 1, order: 8,color: Color.WAN
+        number: 1, order: 8, color: Color.WAN
     },
     {
-        number: 1, order: 9,color: Color.WAN
+        number: 1, order: 9, color: Color.WAN
     },
     {
-        number: 1, order: 10,color: Color.WAN
+        number: 1, order: 10, color: Color.WAN
     },
     {
-        number: 1, order: 11,color: Color.WAN
+        number: 1, order: 11, color: Color.WAN
     },
     {
-        number: 1, order: 12,color: Color.WAN
+        number: 1, order: 12, color: Color.WAN
     },
     {
-        number: 1, order: 13,color: Color.WAN
+        number: 1, order: 13, color: Color.WAN
     },
     {
-        number: 1, order: 14,color: Color.WAN
+        number: 1, order: 14, color: Color.WAN
     },]
 export const table: TableProps = {
     table: {
@@ -110,7 +114,7 @@ export const table: TableProps = {
                 avatar: '',
                 nickName: '',
             },
-            catch:null
+            catch: null
         },
         east: {
             extraList: mahjongList,
@@ -128,7 +132,7 @@ export const table: TableProps = {
                 avatar: '',
                 nickName: '',
             },
-            catch:null
+            catch: null
         },
         fireWinnerConfig: 0,
         leaseNumber: 0,
@@ -148,7 +152,7 @@ export const table: TableProps = {
                 avatar: '',
                 nickName: '',
             },
-            catch:null
+            catch: null
         },
         openUser: {
             userCode: '',
@@ -175,7 +179,7 @@ export const table: TableProps = {
                 avatar: '',
                 nickName: '',
             },
-            catch:null
+            catch: null
         },
         step: 0,
         tableId: '',
@@ -197,17 +201,38 @@ export const table: TableProps = {
                 avatar: '',
                 nickName: '',
             },
-            catch:null
+            catch: null
         }
     },
     taskId: '',
     timeLimit: 0,
     leaseNumber: 0,
-    leaseStatus: [LeaseStatus.PENG],
+    leaseStatus: [],
     canOut: false,
-    canLease: true,
+    canLease: false,
     displayLeaseStatus: null,
-    displayMahjong: null
+    displayMahjong: null,
+    endDetail: {
+        endWay: EndWay.NO_MAHJONG,
+        winner: null,
+        loser: null
+        // winner: [{
+        //     position: Position.EAST,
+        //     points: 20,
+        //     operation: SupplierType.OUT,
+        //     huType: [HuType.LOONG_SEVEN_PAIR]
+        // },{
+        //     position: Position.WEST,
+        //     points: 10,
+        //     operation: SupplierType.OUT,
+        //     huType: [HuType.CLEAR]
+        // }],
+        // loser: [{
+        //     position: Position.NORTH,
+        //     points: 30,
+        //     operation: SupplierType.OUT,
+        // },]
+    },
 }
 
 

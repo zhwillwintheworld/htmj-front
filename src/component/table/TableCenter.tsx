@@ -1,10 +1,11 @@
 import {CenterProps} from "../../domain/Table.ts";
 import {Button, Modal} from "antd";
-import {LeaseStatus} from "../../domain/Task.ts";
+import {EndWay, LeaseStatus} from "../../domain/Task.ts";
 import {makeLeaseTaskMessage, makeMessage, makeTaskPayload} from "../util/MessageUtil.ts";
 import {useContext, useEffect, useState} from "react";
 import {TableContext} from "../../config/TableContext.ts";
 import {MessageContext} from "../../config/MessageContext.ts";
+import {getHuTypeDesc, getSeatByPosition, getWinSupplierDesc} from "../util/TableUtil.ts";
 
 function TableCenter({props}: { props: CenterProps }) {
     const tableProps = useContext(TableContext)!;
@@ -13,14 +14,14 @@ function TableCenter({props}: { props: CenterProps }) {
         console.log("message is null")
     }
     const modal = tableProps.canLease
-    if (modal) {
-        console.log("modal is true")
-    }
     const [isModalOpen, setIsModalOpen] = useState(modal)
+    const isEnd = tableProps.endDetail != null
+    const [isEndModalOpen, setIsEndModalOpen] = useState(isEnd)
     useEffect(() => {
         console.log("tableProps.canLease changed:", modal);
         setIsModalOpen(modal);
-    }, [modal]); // 依赖 modal (tableProps.canLease)
+        setIsEndModalOpen(isEnd)
+    }, [modal, isEnd]); // 依赖 modal (tableProps.canLease)
 
     useEffect(() => {
         if (isModalOpen) {
@@ -68,6 +69,57 @@ function TableCenter({props}: { props: CenterProps }) {
                                                 '不要'
                                             }</span>
                             </Button>
+                        </div>
+                    </Modal>
+
+
+                    <Modal title="游戏结束" open={isEndModalOpen}>
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}>
+                            <div style={{margin: '10px'}}>
+
+                                {
+                                    tableProps.endDetail?.endWay == EndWay.HU ? <span>胡</span> : <span>流局</span>
+                                }
+                            </div>
+                            <div style={{margin: '10px'}}>
+                                {
+                                    tableProps.endDetail?.winner?.map(
+                                        (item) => (
+                                            <div key={item.position}>
+                                                <span> 赢家 : {getSeatByPosition(tableProps.table, item.position).user.userName} </span>
+                                                <span>    方式:{
+                                                    getWinSupplierDesc(item.operation)
+                                                } </span>
+                                                <span>    牌型:{
+                                                    item.huType.map((huType) => (getHuTypeDesc(huType)))
+                                                }</span>
+                                                <span>   点数: {item.points} </span>
+                                            </div>
+                                        )
+                                    )
+                                }
+                            </div>
+
+                            <div style={{margin: '10px'}}>
+                                {
+                                    tableProps.endDetail?.loser?.map(
+                                        (item) => (
+                                            <div key={item.position}>
+                                                <span> 输家 : {getSeatByPosition(tableProps.table, item.position).user.userName} </span>
+                                                <span>    方式:{
+                                                    getWinSupplierDesc(item.operation)
+                                                } </span>
+                                                <span>   点数: {item.points} </span>
+                                            </div>
+                                        )
+                                    )
+                                }
+                            </div>
                         </div>
                     </Modal>
                 </div>

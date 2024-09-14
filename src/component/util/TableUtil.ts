@@ -1,7 +1,11 @@
-import {Seat, Table, TableProps} from "../../domain/Table.ts";
+import {Seat, SupplierType, Table, TableProps} from "../../domain/Table.ts";
 import {
-    LeaseStatus, Mahjong,
-    MahjongChangeResponseMessage, MahjongInitResponseMessage,
+    HuType,
+    LeaseStatus,
+    Mahjong,
+    MahjongChangeResponseMessage,
+    MahjongEndResponseMessage,
+    MahjongInitResponseMessage,
     MahjongLeaseResponseMessage,
     MahjongOutResponseMessage,
     MahjongSendLeaseResponseMessage,
@@ -20,11 +24,12 @@ export const initTableProp = (message: MahjongInitResponseMessage, userCode: str
         taskId: message.taskId,
         timeLimit: message.timeLimit,
         displayMahjong: null,
-        displayLeaseStatus: null
+        displayLeaseStatus: null,
+        endDetail: null
     }
 }
 
-const getSeatByPosition = (table: Table, position: Position): Seat => {
+export const getSeatByPosition = (table: Table, position: Position): Seat => {
     switch (position) {
         case Position.EAST:
             return table.east;
@@ -34,6 +39,44 @@ const getSeatByPosition = (table: Table, position: Position): Seat => {
             return table.south;
         case Position.WEST:
             return table.west;
+    }
+}
+
+export const getHuTypeDesc = (huType: HuType): string => {
+    switch (huType) {
+        case HuType.BAO_TING:
+            return '报听';
+        case HuType.CLEAR:
+            return '清一色';
+        case HuType.GENERAL:
+            return '平胡';
+        case HuType.LOONG_SEVEN_PAIR:
+            return '龙七对';
+        case HuType.NO_JIANG:
+            return '无将胡';
+        case HuType.PENG_PENG_HU:
+            return '碰碰胡';
+        case HuType.SEVEN_PAIR:
+            return '七对';
+        case HuType.TWO_COLOR:
+            return '缺一门';
+        case HuType.TWO_FIVE_EIGHT:
+            return '二五八';
+        default:
+            return '未知';
+    }
+}
+
+export const getWinSupplierDesc = (supplierType: SupplierType): string => {
+    switch (supplierType) {
+        case SupplierType.CATCH:
+            return '自摸';
+        case SupplierType.GANG:
+            return '抢杠胡';
+        case SupplierType.OUT:
+            return '抓炮';
+        default:
+            return '未知';
     }
 }
 
@@ -67,7 +110,8 @@ export const changeTableProp = (tableProps: TableProps, message: MahjongChangeRe
         taskId: message.taskId,
         timeLimit: message.timeLimit,
         displayMahjong: null,
-        displayLeaseStatus: null
+        displayLeaseStatus: null,
+        endDetail: null
     }
 }
 
@@ -89,7 +133,8 @@ export const outTableProp = (tableProps: TableProps, message: MahjongOutResponse
         taskId: null,
         timeLimit: 0,
         displayMahjong: message.mahjong,
-        displayLeaseStatus: null
+        displayLeaseStatus: null,
+        endDetail: null
     }
 }
 export const leaseTableProp = (tableProps: TableProps, message: MahjongLeaseResponseMessage): TableProps => {
@@ -157,7 +202,8 @@ export const leaseTableProp = (tableProps: TableProps, message: MahjongLeaseResp
         taskId: null,
         timeLimit: 0,
         displayMahjong: message.mahjong,
-        displayLeaseStatus: message.status
+        displayLeaseStatus: message.status,
+        endDetail: null
     }
 }
 
@@ -172,6 +218,27 @@ export const sendLeaseTableProp = (tableProps: TableProps, message: MahjongSendL
         taskId: message.taskId,
         timeLimit: message.timeLimit,
         displayMahjong: message.mahjong,
-        displayLeaseStatus: null
+        displayLeaseStatus: null,
+        endDetail: null
+    }
+}
+
+export const endTableProp = (tableProps: TableProps, message: MahjongEndResponseMessage): TableProps => {
+    const table: Table = message.table
+    return {
+        canLease: false,
+        canOut: false,
+        leaseNumber: table.leaseNumber,
+        leaseStatus: [],
+        table: table,
+        taskId: null,
+        timeLimit: 0,
+        displayMahjong: tableProps.displayMahjong,
+        displayLeaseStatus: null,
+        endDetail: {
+            endWay: message.endWay,
+            loser: message.loser,
+            winner: message.winner
+        }
     }
 }

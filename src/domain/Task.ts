@@ -136,6 +136,12 @@ interface MahjongEndResponseMessage {
     endWay: EndWay,
 }
 
+interface EndDetail {
+    winner: Array<HuDetail> | null,
+    loser: Array<LoseDetail> | null,
+    endWay: EndWay,
+}
+
 interface MahjongErrorResponseMessage {
     code: number,
     message: string
@@ -255,7 +261,7 @@ enum UserType {
 export {
     ServerMessageType, MahjongMessageType,
     MahjongMessageEvent, Position, UserType,
-    PLATFORM, CommunicateType, LeaseStatus, Color
+    PLATFORM, CommunicateType, LeaseStatus, Color, EndWay,HuType
 };
 export type {
     ClientRequest,
@@ -263,7 +269,7 @@ export type {
     InitSeatDTO, UserDTO, TextMessage, MahjongOutResponseMessage, Mahjong,
     MahjongInitResponseMessage, MahjongChangeResponseMessage, MahjongErrorResponseMessage,
     MahjongSendLeaseResponseMessage, MahjongLeaseResponseMessage, MahjongEndResponseMessage,
-    MahjongOutRequestMessage
+    MahjongOutRequestMessage, EndDetail
 };
 
 

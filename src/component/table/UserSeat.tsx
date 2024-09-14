@@ -38,8 +38,6 @@ function UserSeat({props}: { props: SeatProps }) {
         ))
         // 去除选中
         setSelectedCardIndex(-1)
-        console.log("消息发送器状态是否为空" + message == null)
-        console.log("消息体为" + JSON.stringify(messageContent))
         message?.onNext(makeTaskPayload(messageContent))
         console.log(`Card ${it.number} confirmed!`);
     };
