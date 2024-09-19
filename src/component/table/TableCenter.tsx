@@ -105,6 +105,18 @@ function TableCenter({props}: { props: CenterProps }) {
                                 }
                             </div>
 
+                            <div>
+                                {
+                                    tableProps.endDetail?.specificNumber ? <div style={{margin: '10px'}}>
+                                        <span>抓鸟: {tableProps.endDetail?.specificNumber == 1 || tableProps.endDetail?.specificNumber == 5
+                                        || tableProps.endDetail?.specificNumber == 9 ? '在手' :
+                                            getSeatByPosition(tableProps.table, tableProps.endDetail.specificLoser!).user.userName
+                                        }</span></div>
+                                        : <></>
+
+                                }
+                            </div>
+
                             <div style={{margin: '10px'}}>
                                 {
                                     tableProps.endDetail?.loser?.map(

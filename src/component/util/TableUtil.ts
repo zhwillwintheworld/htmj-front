@@ -238,7 +238,9 @@ export const endTableProp = (tableProps: TableProps, message: MahjongEndResponse
         endDetail: {
             endWay: message.endWay,
             loser: message.loser,
-            winner: message.winner
+            winner: message.winner,
+            specificLoser: message.specificLoser,
+            specificNumber: message.specificNumber
         }
     }
 }

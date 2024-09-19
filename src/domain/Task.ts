@@ -133,12 +133,16 @@ interface MahjongEndResponseMessage {
     winner: Array<HuDetail> | null,
     loser: Array<LoseDetail> | null,
     table: Table,
+    specificNumber: number | null,
+    specificLoser: Position | null,
     endWay: EndWay,
 }
 
 interface EndDetail {
     winner: Array<HuDetail> | null,
     loser: Array<LoseDetail> | null,
+    specificNumber: number | null,
+    specificLoser: Position | null,
     endWay: EndWay,
 }
 
@@ -261,7 +265,7 @@ enum UserType {
 export {
     ServerMessageType, MahjongMessageType,
     MahjongMessageEvent, Position, UserType,
-    PLATFORM, CommunicateType, LeaseStatus, Color, EndWay,HuType
+    PLATFORM, CommunicateType, LeaseStatus, Color, EndWay, HuType
 };
 export type {
     ClientRequest,
