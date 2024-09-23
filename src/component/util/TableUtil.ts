@@ -155,7 +155,7 @@ export const leaseTableProp = (tableProps: TableProps, message: MahjongLeaseResp
             break
         case LeaseStatus.GANG:
             receiveUser.publicList.push(mahjong, ...happenedUser.extraList.filter(m => m.number == mahjong.number))
-            receiveUser.extraList = happenedUser.extraList.filter(m => m.number != mahjong.number)
+            receiveUser.extraList = receiveUser.extraList.filter(m => m.number != mahjong.number)
             receiveUser.points += 3
             happenedUser.points -= 3
             table.currentSeat = receiveUser
