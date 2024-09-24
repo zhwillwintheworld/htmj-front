@@ -56,7 +56,8 @@ function UserSeat({props}: { props: SeatProps }) {
                 alignItems: 'center',
                 backgroundColor: isSelf ? 'rgba(5,196,199,0.76)' : '#004d4c',
             }}>
-                <div style={{display: 'flex', margin: '20px',justifyContent: 'center',alignItems: 'center',
+                <div style={{
+                    display: 'flex', margin: '20px', justifyContent: 'center', alignItems: 'center',
                     flexDirection: isHorizontal ? 'row' : 'column',
 
                 }}>
@@ -64,16 +65,16 @@ function UserSeat({props}: { props: SeatProps }) {
                     <div>
                         <Avatar style={{backgroundColor: '#87d068'}}
                                 size={45}
-                                // icon={<UserOutlined/>}>
-                            >
+                            // icon={<UserOutlined/>}>
+                        >
                             {props.user.userName}
                         </Avatar>
                     </div>
 
-                    <div style={{margin: '15px',color: 'white'}}>
+                    <div style={{margin: '15px', color: 'white'}}>
                         积分： {props.points}
                     </div>
-                    <div style={{margin: '10px',color: 'white'}}>
+                    <div style={{margin: '10px', color: 'white'}}>
                         方位：{props.position == Position.EAST ? '东' : props.position == Position.SOUTH ? '南' : props.position == Position.WEST ? '西' : '北'}
                     </div>
 
@@ -93,16 +94,27 @@ function UserSeat({props}: { props: SeatProps }) {
                                 />
                             ))
                         }
-                        {
-                            props.catch ? (
+
+                    </div>
+
+
+                    {
+                        props.catch ? (
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: isHorizontal ? 'row' : 'column',
+                                transform: 'skew(20deg)'
+                            }}>
                                 <Card key={props.catch.order} value={props.catch.number} isHorizontal={isHorizontal}
                                       isLeft={isLeft}
                                       isSelected={selectedCardIndex === props.catch.order}
                                       onSelect={() => handleSelect(props.catch!.order)}
                                       onConfirm={() => handleConfirm(props.catch!)}/>
-                            ) : <></>
-                        }
-                    </div>
+                            </div>
+
+                        ) : <></>
+                    }
+
 
                 </div>
 

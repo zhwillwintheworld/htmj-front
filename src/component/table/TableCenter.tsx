@@ -6,6 +6,7 @@ import {useContext, useEffect, useState} from "react";
 import {TableContext} from "../../config/TableContext.ts";
 import {MessageContext} from "../../config/MessageContext.ts";
 import {getHuTypeDesc, getSeatByPosition, getWinSupplierDesc} from "../util/TableUtil.ts";
+import Card from "./Card.tsx";
 
 function TableCenter({props}: { props: CenterProps }) {
     const tableProps = useContext(TableContext)!;
@@ -42,6 +43,13 @@ function TableCenter({props}: { props: CenterProps }) {
             <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                 <div>
                     <span>点数:{props.randomNumber}</span>
+                </div>
+                <div>
+                    {
+                        tableProps.displayMahjong != null ?
+                            <Card value={tableProps.displayMahjong.number} isHorizontal={true} isLeft={false} isSelected={false} onSelect={()=>{}} onConfirm={()=>{}}/>
+                            : <div></div>
+                    }
                 </div>
                 <div>
                     <Modal title="做出你的选择" open={isModalOpen} footer={null}>

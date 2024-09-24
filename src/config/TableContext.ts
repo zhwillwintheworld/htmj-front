@@ -1,5 +1,5 @@
 import React, {createContext} from 'react';
-import {TableProps, TaskType} from "../domain/Table.ts";
+import { TableProps, TaskType} from "../domain/Table.ts";
 import {
     Color,
     EndWay,
@@ -215,7 +215,9 @@ export const table: TableProps = {
     endDetail: {
         endWay: EndWay.NO_MAHJONG,
         winner: null,
-        loser: null
+        loser: null,
+        specificLoser: null,
+        specificNumber:1
         // winner: [{
         //     position: Position.EAST,
         //     points: 20,

@@ -109,7 +109,7 @@ export const changeTableProp = (tableProps: TableProps, message: MahjongChangeRe
         table: table,
         taskId: message.taskId,
         timeLimit: message.timeLimit,
-        displayMahjong: null,
+        displayMahjong: tableProps.displayMahjong,
         displayLeaseStatus: null,
         endDetail: null
     }
