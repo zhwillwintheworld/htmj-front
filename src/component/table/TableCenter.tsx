@@ -81,7 +81,7 @@ function TableCenter({props}: { props: CenterProps }) {
                     </Modal>
 
 
-                    <Modal title="游戏结束" open={isEndModalOpen}>
+                    <Modal title="游戏结束" open={isEndModalOpen} onOk={() => setIsEndModalOpen(false)} onCancel={() => setIsEndModalOpen(false)}>
                         <div style={{
                             display: 'flex',
                             flexDirection: 'column',

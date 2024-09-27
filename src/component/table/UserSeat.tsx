@@ -103,7 +103,6 @@ function UserSeat({props}: { props: SeatProps }) {
                             <div style={{
                                 display: 'flex',
                                 flexDirection: isHorizontal ? 'row' : 'column',
-                                transform: 'skew(20deg)'
                             }}>
                                 <Card key={props.catch.order} value={props.catch.number} isHorizontal={isHorizontal}
                                       isLeft={isLeft}
@@ -117,8 +116,32 @@ function UserSeat({props}: { props: SeatProps }) {
 
 
                 </div>
+                <div style={{margin: '10px', display: 'flex',}}>
+                    {
+                        props.publicList.length > 0 ? (
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: isHorizontal ? 'row' : 'column',
+                            }}>
+                                {
+                                    props.publicList.sort((a, b) => a.number - b.number).map((item) => (
+                                        <Card key={item.order} value={item.number} isHorizontal={isHorizontal}
+                                              isLeft={isLeft}
+                                              isSelected={false}
+                                              onSelect={() => {
+                                              }}
+                                              onConfirm={() => {
+                                              }}
+                                        />
+                                    ))
+                                }
+                            </div>
 
-                <div style={{margin: '30px', display: 'flex',}}>
+                        ) : <></>
+                    }
+                </div>
+
+                <div style={{ display: 'flex',}}>
                     {/* 出牌区域 */}
                     <div style={{display: 'flex', flexDirection: isHorizontal ? 'row' : 'column',}}>
                         {
@@ -133,8 +156,7 @@ function UserSeat({props}: { props: SeatProps }) {
                     </div>
                 </div>
 
-                <div style={{margin: '5px', display: 'flex',}}>
-                </div>
+
             </div>
         </>
     )

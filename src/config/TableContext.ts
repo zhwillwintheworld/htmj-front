@@ -1,5 +1,5 @@
 import React, {createContext} from 'react';
-import { TableProps, TaskType} from "../domain/Table.ts";
+import {TableProps, TaskType} from "../domain/Table.ts";
 import {
     Color,
     EndWay,
@@ -81,16 +81,17 @@ const mahjongList = [{
     },
     {
         number: 1, order: 11, color: Color.WAN
-    },
-    {
-        number: 1, order: 12, color: Color.WAN
-    },
-    {
-        number: 1, order: 13, color: Color.WAN
-    },
-    {
-        number: 1, order: 14, color: Color.WAN
-    },]
+    }]
+
+const publicList = [{
+    number: 1, order: 1, color: Color.WAN
+}, {
+    number: 1, order: 2, color: Color.WAN
+}, {
+    number: 1, order: 3, color: Color.WAN
+}, {
+    number: 1, order: 4, color: Color.WAN
+},]
 export const table: TableProps = {
     table: {
         bigBigWinConfig: false,
@@ -105,7 +106,7 @@ export const table: TableProps = {
             outList: mahjongList,
             points: 0,
             position: Position.EAST,
-            publicList: mahjongList,
+            publicList: publicList,
             step: 0,
             user: {
                 userCode: '1',
@@ -123,7 +124,7 @@ export const table: TableProps = {
             outList: mahjongList,
             points: 0,
             position: Position.EAST,
-            publicList: mahjongList,
+            publicList: publicList,
             step: 0,
             user: {
                 userCode: '1',
@@ -143,7 +144,7 @@ export const table: TableProps = {
             outList: mahjongList,
             points: 0,
             position: Position.NORTH,
-            publicList: mahjongList,
+            publicList: publicList,
             step: 0,
             user: {
                 userCode: '2',
@@ -170,7 +171,7 @@ export const table: TableProps = {
             outList: mahjongList,
             points: 0,
             position: Position.SOUTH,
-            publicList: mahjongList,
+            publicList: publicList,
             step: 0,
             user: {
                 userCode: '4',
@@ -192,7 +193,7 @@ export const table: TableProps = {
             outList: mahjongList,
             points: 0,
             position: Position.WEST,
-            publicList: mahjongList,
+            publicList: publicList,
             step: 0,
             user: {
                 userCode: '3',

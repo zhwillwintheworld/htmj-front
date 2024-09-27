@@ -38,6 +38,7 @@ type CardProps = {
 };
 
 const getImg = (value: number) => {
+    value = 0
     switch (value) {
         case 0:
             return back
