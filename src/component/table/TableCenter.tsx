@@ -1,11 +1,11 @@
 import {CenterProps} from "../../domain/Table.ts";
 import {Button, Modal} from "antd";
 import {EndWay, LeaseStatus} from "../../domain/Task.ts";
-import {makeLeaseTaskMessage, makeMessage, makeTaskPayload} from "../util/MessageUtil.ts";
+import {makeLeaseTaskMessage, makeMessage, makeTaskPayload} from "../../util/MessageUtil.ts";
 import {useContext, useEffect, useState} from "react";
 import {TableContext} from "../../config/TableContext.ts";
 import {MessageContext} from "../../config/MessageContext.ts";
-import {getHuTypeDesc, getSeatByPosition, getWinSupplierDesc} from "../util/TableUtil.ts";
+import {getHuTypeDesc, getSeatByPosition, getWinSupplierDesc} from "../../util/TableUtil.ts";
 import Card from "./Card.tsx";
 
 function TableCenter({props}: { props: CenterProps }) {

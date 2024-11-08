@@ -1,4 +1,4 @@
-import {Seat, SupplierType, Table, TableProps} from "../../domain/Table.ts";
+import {Seat, SupplierType, Table, TableProps} from "../domain/Table.ts";
 import {
     HuType,
     LeaseStatus,
@@ -10,7 +10,7 @@ import {
     MahjongOutResponseMessage,
     MahjongSendLeaseResponseMessage,
     Position
-} from "../../domain/Task.ts";
+} from "../domain/Task.ts";
 
 export const initTableProp = (message: MahjongInitResponseMessage, userCode: string): TableProps => {
     const table = message.table;

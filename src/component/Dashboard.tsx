@@ -2,9 +2,12 @@ import React from 'react';
 
 import {Button, Tabs, Typography} from 'antd';
 import Play from "./play/Play.tsx";
+import UserForm from "./user/UserForm.tsx";
 
 const {Text} = Typography;
 
+
+type PositionType = 'left' | 'right';
 
 const OperationsSlot: Record<PositionType, React.ReactNode> = {
     left: <Text>会同麻将</Text>,
@@ -28,12 +31,15 @@ items.push({
     children: `Content of tab 战绩`,
 })
 
+const token = localStorage.getItem("token")
+console.log(token)
+
 function Dashboard() {
 
 
     return (
         <>
-            <Tabs centered tabBarExtraContent={OperationsSlot} items={items}/>
+            {token == null ? <UserForm/> : <Tabs centered tabBarExtraContent={OperationsSlot} items={items}/>}
         </>
     )
 }

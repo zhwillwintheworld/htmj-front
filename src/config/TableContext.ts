@@ -20,7 +20,7 @@ import {
     leaseTableProp,
     outTableProp,
     sendLeaseTableProp
-} from "../component/util/TableUtil.ts";
+} from "../util/TableUtil.ts";
 
 export const TableContext = createContext<TableProps | null>(null);
 export const TableChangeContext = createContext<React.Dispatch<Action> | null>(null);

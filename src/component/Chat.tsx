@@ -27,7 +27,7 @@ import {ISubscriber, Payload} from "rsocket-types";
 import {Flowable} from "rsocket-flowable";
 import {useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {MessageChangeContext} from '../config/MessageContext.ts';
-import {makeInitTaskMessage, makeMessage, makeTaskPayload} from "./util/MessageUtil.ts";
+import {makeInitTaskMessage, makeMessage, makeTaskPayload} from "../util/MessageUtil.ts";
 
 if (typeof window !== 'undefined') {
     window.Buffer = Buffer;

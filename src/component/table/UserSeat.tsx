@@ -4,7 +4,7 @@ import {Avatar} from "antd";
 import {useContext, useEffect, useState} from "react";
 import {TableContext} from "../../config/TableContext.ts";
 import {MessageContext} from "../../config/MessageContext.ts";
-import {makeMessage, makeOutTaskMessage, makeTaskPayload} from "../util/MessageUtil.ts";
+import {makeMessage, makeOutTaskMessage, makeTaskPayload} from "../../util/MessageUtil.ts";
 import {Mahjong, Position} from "../../domain/Task.ts";
 
 function UserSeat({props}: { props: SeatProps }) {

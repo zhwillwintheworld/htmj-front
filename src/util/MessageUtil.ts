@@ -1,7 +1,8 @@
 import {
     ClientRequest,
     CommunicateType,
-    LeaseStatus, Mahjong,
+    LeaseStatus,
+    Mahjong,
     MahjongMessage,
     MahjongMessageEvent,
     MahjongMessageType,
@@ -9,7 +10,7 @@ import {
     Position,
     ServerMessageType,
     UserType
-} from "../../domain/Task.ts";
+} from "../domain/Task.ts";
 import {Payload} from "rsocket-types";
 import {Buffer} from "buffer";
 import {encodeCompositeMetadata, encodeRoute, MESSAGE_RSOCKET_ROUTING} from "rsocket-core";
