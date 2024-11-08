@@ -1,8 +1,12 @@
 import {Button, Form, FormProps, Input} from "antd";
 import {LoginRequest} from "../../domain/param/UserParam.ts";
+import {API_LOGIN} from "../../config/RequestConfig.ts";
 
 const onFinish: FormProps<LoginRequest>['onFinish'] = (values) => {
-    console.log('Success:', values);
+    API_LOGIN(values).then(res => {
+        console.log(res)
+        localStorage.setItem('token', res.token)
+    })
 };
 
 const onFinishFailed: FormProps<LoginRequest>['onFinishFailed'] = (errorInfo) => {
@@ -13,7 +17,7 @@ function Login() {
     return (
         <>
             <div style={{
-                width : '100%',
+                width: '100%',
                 height: '80vh',
                 display: 'flex',
                 justifyContent: 'center',
