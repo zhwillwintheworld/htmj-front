@@ -1,4 +1,3 @@
-import {useLocation} from 'react-router-dom';
 import Dashboard from "./Dashboard.tsx";
 import {
     MahjongChangeResponseMessage,
@@ -23,11 +22,14 @@ import {
 } from 'rsocket-core';
 import RSocketWebSocketClient from 'rsocket-websocket-client';
 import {Buffer} from 'buffer';
-import {ISubscriber, Payload} from "rsocket-types";
+import {Payload} from "rsocket-types";
 import {Flowable} from "rsocket-flowable";
-import {useCallback, useContext, useEffect, useMemo, useState} from "react";
+import {useCallback, useContext, useEffect} from "react";
 import {MessageChangeContext} from '../config/MessageContext.ts';
-import {makeInitTaskMessage, makeMessage, makeTaskPayload} from "../util/MessageUtil.ts";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import Play from "./play/Play.tsx";
+import UserForm from "./user/UserForm.tsx";
+import {UserContext} from "../config/UserContext.ts";
 
 if (typeof window !== 'undefined') {
     window.Buffer = Buffer;
@@ -41,35 +43,18 @@ const metadataMimeType = MESSAGE_RSOCKET_COMPOSITE_METADATA.string;
 const route = 'im.v1.setup';
 
 function Chat() {
-    const location = useLocation()
-    const [subscriber, setSubscriber] = useState<ISubscriber<Payload<Buffer, Buffer>> | null>(null)
+
     const dispatch = useContext(TableChangeContext)!
     const messageDispatch = useContext(MessageChangeContext)!
-    const queryParams = new URLSearchParams(location.search)
-    let userCode = queryParams.get('userCode');
-    if (userCode == null) {
-        userCode = ''
-    }
-    let token = '';
-    if ('1' == userCode) {
-        token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdWRvb29tLmNvbSIsInN1YiI6Imh0bWoiLCJ1c2VyQ29kZSI6IjEifQ.tQ9BoTNtn6WliSf9F_ha9F58Q6VD6aP78EOw9BFTHb8'
-    } else if ('2' == userCode) {
-        token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdWRvb29tLmNvbSIsInN1YiI6Imh0bWoiLCJ1c2VyQ29kZSI6IjIifQ.bZ4N09E092HyWzdvNgfENrUKDsF5z7mMEYF6NpXksq8'
-    } else if ('3' == userCode) {
-        token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdWRvb29tLmNvbSIsInN1YiI6Imh0bWoiLCJ1c2VyQ29kZSI6IjMifQ.zoYb5FPX3IhQD03t99wEGJL7drPKeeOo5TsDXvC9vEA'
-    } else if ('4' == userCode) {
-        token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdWRvb29tLmNvbSIsInN1YiI6Imh0bWoiLCJ1c2VyQ29kZSI6IjQifQ.YIj5vBszPsmBWT5CtapVF45Lfoe9SrUX8mgB_OlXw4o'
-    }
+    const user = useContext(UserContext)
 
-    const connInfo = useMemo(() => ({
-        token,
-        platform: 'WEB',
-        userCode
-    }), [token, userCode])
+    const token = user?.token;
+    const userCode = user?.userCode;
+
 
     const processMessage = useCallback((payload: Payload<Buffer, Buffer>) => {
         const message = JSON.parse(payload.data?.toString() as string);
-        if (message.message != null && message.message.type == ServerMessageType.MAHJONG) {
+        if (message.message != null && message.message.type == ServerMessageType.MAHJONG && userCode !== null && userCode != '') {
             const messageContent = message.message.content as MahjongMessage;
             let body
             switch (messageContent.event) {
@@ -77,7 +62,7 @@ function Chat() {
                 case MahjongMessageEvent.INIT_RESPONSE:
                     body = messageContent.content as MahjongInitResponseMessage;
                     console.log('收到初始化响应，出牌人为')
-                    dispatch({type: 'INIT', payload: body, userCode})
+                    dispatch({type: 'INIT', payload: body, userCode: userCode!})
                     break;
                 // 解决出牌
                 case MahjongMessageEvent.OUT_RESPONSE:
@@ -112,24 +97,34 @@ function Chat() {
             console.log(body)
         }
     }, [dispatch, userCode])
-    const requestFlowable = new Flowable<Payload<Buffer, Buffer>>((subscriber) => {
-        setSubscriber(subscriber)
-        messageDispatch({type: 'SET', payload: subscriber})
-        subscriber.onSubscribe({
-            request: (n) => {
-                console.log('request', n);
-                console.log("发送了消息，n = " + n)
-            },
-            cancel: () => {
-                // 取消task stream
-                setSubscriber(null);
-                console.log('cancel');
-            },
-        });
-        // 这里可以开始 emit 初始数据或在外部通过 subscriberRef 来 emit 数据
-    });
+
 
     useEffect(() => {
+        if (userCode == null || userCode == '' || token == null || token == '') {
+            console.log('userCode为空，无法建立连接')
+            return
+        }
+        const connInfo = {
+            token,
+            platform: 'WEB',
+            userCode
+        }
+        const requestFlowable = new Flowable<Payload<Buffer, Buffer>>((subscriber) => {
+            messageDispatch({type: 'SET', payload: subscriber})
+            subscriber.onSubscribe({
+                request: (n) => {
+                    console.log('request', n);
+                    console.log("发送了消息，n = " + n)
+                },
+                cancel: () => {
+                    // 取消task stream
+                    messageDispatch({type: 'CLEAR', payload: null});
+                    subscriber.onComplete();
+                    console.log('cancel');
+                },
+            });
+            // 这里可以开始 emit 初始数据或在外部通过 subscriberRef 来 emit 数据
+        });
         const client = new RSocketClient<Buffer, Buffer>({
             setup: {
                 dataMimeType,
@@ -187,21 +182,21 @@ function Chat() {
                 console.log('error:', error);
             },
         );
-    }, [connInfo, processMessage])
-
-    if (subscriber == null) {
-        console.log("subscriber == null")
-    } else {
-        console.log("subscriber != null")
-        subscriber.onNext(makeTaskPayload(makeMessage(userCode, token, makeInitTaskMessage())))
-    }
+    }, [user, processMessage, userCode, token, messageDispatch])
 
 
     return (
         <>
-            <div>
+            <BrowserRouter>
                 <Dashboard></Dashboard>
-            </div>
+                <Routes>
+                    <Route path="/" element={<Play/>}></Route>
+                    <Route path="/room" element={<Play/>}></Route>
+                    <Route path="/chat" element={"聊天"}></Route>
+                    <Route path="/history" element={"战绩"}></Route>
+                    <Route path="/user" element={<UserForm/>}></Route>
+                </Routes>
+            </BrowserRouter>
         </>
     )
 }

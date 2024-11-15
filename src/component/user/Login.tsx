@@ -1,19 +1,35 @@
 import {Button, Form, FormProps, Input} from "antd";
 import {LoginRequest} from "../../domain/param/UserParam.ts";
 import {API_LOGIN} from "../../config/RequestConfig.ts";
-
-const onFinish: FormProps<LoginRequest>['onFinish'] = (values) => {
-    API_LOGIN(values).then(res => {
-        console.log(res)
-        localStorage.setItem('token', res.token)
-    })
-};
+import {useNavigate} from "react-router-dom";
+import {useContext} from "react";
+import {UserChangeContext} from "../../config/UserContext.ts";
 
 const onFinishFailed: FormProps<LoginRequest>['onFinishFailed'] = (errorInfo) => {
     console.log('Failed:', errorInfo);
 };
 
 function Login() {
+    const navigate = useNavigate();
+    const userDispatch = useContext(UserChangeContext)!
+    const onFinish: FormProps<LoginRequest>['onFinish'] = (values) => {
+        values.platform = 'WEB'
+        values.app = 'mahjong'
+        API_LOGIN(values).then(res => {
+            localStorage.setItem('token', res.token)
+            localStorage.setItem("userCode", res.userCode)
+            localStorage.setItem("userType", res.userType)
+            userDispatch({
+                type: 'SET', payload: {
+                    token: res.token,
+                    userCode: res.userCode,
+                    userType: res.userType
+                }
+            })
+            navigate("/")
+        })
+    };
+
     return (
         <>
             <div style={{
