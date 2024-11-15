@@ -1,11 +1,11 @@
-import TableTest from "../table/TableContent.tsx";
+import TableContent from "../table/TableContent.tsx";
 
 function Room() {
 
     return (
         <>
             <div>
-                <TableTest/>
+                <TableContent/>
             </div>
         </>
     )

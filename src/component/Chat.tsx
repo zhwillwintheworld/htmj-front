@@ -30,6 +30,7 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Play from "./play/Play.tsx";
 import UserForm from "./user/UserForm.tsx";
 import {UserContext} from "../config/UserContext.ts";
+import {WS_URL} from "../config/RequestConfig.ts";
 
 if (typeof window !== 'undefined') {
     window.Buffer = Buffer;
@@ -141,7 +142,7 @@ function Chat() {
             transport: new RSocketWebSocketClient(
                 {
                     debug: true,
-                    url: 'ws://localhost:8082',
+                    url: WS_URL,
                 },
                 BufferEncoders,
             ),
