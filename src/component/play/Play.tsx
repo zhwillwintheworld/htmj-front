@@ -1,13 +1,23 @@
-import { useState } from 'react'
+import {useContext, useEffect, useState} from 'react'
 import Room from "./Room.tsx"
 import EnterRoom from "./EnterRoom.tsx";
-function Play() {
-    const [isVisible] = useState(true);
+import {RoomContext} from "../../config/RoomContext.ts";
+import {UserContext} from "../../config/UserContext.ts";
+import UnLogin from "../user/UnLogin.tsx";
 
+function Play() {
+    const user = useContext(UserContext)
+    const room = useContext(RoomContext)
+    const [isVisible, setIsVisible] = useState(room?.onRoom != null && room.onRoom)
+    const [isLogin,setIsLogin] = useState(user != null && user.userCode!= null)
+    useEffect(() => {
+        setIsVisible(room?.onRoom != null && room.onRoom)
+        setIsLogin(user != null && user.userCode!= null)
+    }, [room, user]);
     return (
         <>
             <div>
-                {isVisible? <Room/> : <EnterRoom/>}
+                {isLogin? isVisible ? <Room/> : <EnterRoom/> : <UnLogin/>}
             </div>
         </>
     )

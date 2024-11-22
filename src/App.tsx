@@ -4,6 +4,7 @@ import {UserProvider} from "./component/provider/UserProvider.tsx";
 import Leader from "./component/Leader.tsx";
 import {useState} from "react";
 import Chat from "./component/Chat.tsx";
+import {RoomProvider} from "./component/provider/RoomProvider.tsx";
 
 function App() {
     const [isInitialized, setIsInitialized] = useState(false);
@@ -15,13 +16,15 @@ function App() {
         <>
             <UserProvider>
                 <MessageProvider>
-                    <TableProvider>
-                        {!isInitialized ? (
-                            <Leader onInitialized={handleInitialized}/>
-                        ) : (
-                            <Chat/>
-                        )}
-                    </TableProvider>
+                    <RoomProvider>
+                        <TableProvider>
+                            {!isInitialized ? (
+                                <Leader onInitialized={handleInitialized}/>
+                            ) : (
+                                <Chat/>
+                            )}
+                        </TableProvider>
+                    </RoomProvider>
                 </MessageProvider>
             </UserProvider>
         </>

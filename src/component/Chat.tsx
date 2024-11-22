@@ -1,5 +1,7 @@
 import Dashboard from "./Dashboard.tsx";
 import {
+    EventMessage,
+    EventType,
     MahjongChangeResponseMessage,
     MahjongEndResponseMessage,
     MahjongErrorResponseMessage,
@@ -9,6 +11,9 @@ import {
     MahjongMessageEvent,
     MahjongOutResponseMessage,
     MahjongSendLeaseResponseMessage,
+    RoomChangePositionMessage,
+    RoomInitMessage,
+    RoomUserMessage,
     ServerMessageType,
 } from '../domain/Task.ts'
 import {TableChangeContext} from '../config/TableContext.ts'
@@ -31,6 +36,7 @@ import Play from "./play/Play.tsx";
 import UserForm from "./user/UserForm.tsx";
 import {UserContext} from "../config/UserContext.ts";
 import {WS_URL} from "../config/RequestConfig.ts";
+import {RoomChangeContext} from "../config/RoomContext.ts";
 
 if (typeof window !== 'undefined') {
     window.Buffer = Buffer;
@@ -47,6 +53,7 @@ function Chat() {
 
     const dispatch = useContext(TableChangeContext)!
     const messageDispatch = useContext(MessageChangeContext)!
+    const roomDispatch = useContext(RoomChangeContext)!
     const user = useContext(UserContext)
 
     const token = user?.token;
@@ -97,7 +104,29 @@ function Chat() {
             }
             console.log(body)
         }
-    }, [dispatch, userCode])
+        if (message.message != null && message.message.type == ServerMessageType.EVENT && userCode !== null && userCode != '') {
+            const eventContent = message.message.content as EventMessage;
+            let body
+            switch (eventContent.event) {
+                case EventType.SELF_JOIN_ROOM:
+                    body = eventContent.content as RoomInitMessage;
+                    roomDispatch({type: 'SELF_JOIN_ROOM', payload: body})
+                    break
+                case EventType.OTHER_JOIN_ROOM:
+                    body = eventContent.content as RoomUserMessage;
+                    roomDispatch({type: 'OTHER_JOIN_ROOM', payload: body})
+                    break
+                case EventType.LEAVE_ROOM:
+                    body = eventContent.content as RoomUserMessage;
+                    roomDispatch({type: 'LEAVE_ROOM', payload: body})
+                    break
+                case EventType.CHANGE_POSITION:
+                    body = eventContent.content as RoomChangePositionMessage;
+                    roomDispatch({type: 'CHANGE_POSITION', payload: body})
+                    console.log('收到切换位置事件，切换位置为' + body.position)
+            }
+        }
+    }, [dispatch, roomDispatch, userCode])
 
 
     useEffect(() => {
@@ -159,11 +188,9 @@ function Chat() {
                         ]),
                     })
                     .subscribe({
-                        // eslint-disable-next-line no-console
                         onComplete: () => console.log('Request-stream completed'),
                         onError: error =>
                             console.error(`Request-stream error:${error.message}`),
-                        // eslint-disable-next-line no-console
                         onNext: value => processMessage(value),
                         onSubscribe: sub => sub.request(maxRSocketRequestN),
                     });
@@ -195,7 +222,7 @@ function Chat() {
                     <Route path="/room" element={<Play/>}></Route>
                     <Route path="/chat" element={"聊天"}></Route>
                     <Route path="/history" element={"战绩"}></Route>
-                    <Route path="/user" element={<UserForm/>}></Route>
+                    <Route path="/login" element={<UserForm/>}></Route>
                 </Routes>
             </BrowserRouter>
         </>

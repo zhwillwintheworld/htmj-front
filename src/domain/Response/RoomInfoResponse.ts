@@ -2,29 +2,29 @@ import {UserDTO} from "../Task.ts";
 
 interface RoomInfoResponse {
     onRoom: boolean,
-    roomBasic: RoomBasicDTO|null,
-    roomConfig: RoomConfigDTO|null,
-    roomTable: RoomTableDTO|null,
+    roomBasic: RoomBasicDTO | null,
+    roomConfig: RoomConfigDTO | null,
+    roomTable: RoomTableDTO | null,
     roomMember: UserDTO[] | null
 }
 
-interface RoomConfigDTO{
+interface RoomConfigDTO {
     // 是否公开
-     isPublic: RoomPublic,
+    isPublic: RoomPublic,
     // 进房间的密码
-     password: string,
+    password: string,
     // 限制进入的人数
-     limit: number,
+    limit: number,
     // 能否能烧庄
-     canFireWinner: boolean,
+    canFireWinner: boolean,
     // boolean
-     bigBigWinConfig: boolean,
+    bigBigWinConfig: boolean,
     // 完庄完杠
-     completeWinnerConfig: boolean,
+    completeWinnerConfig: boolean,
     // 烧庄配置
-     fireWinnerConfig: number,
+    fireWinnerConfig: number,
     // 是否可以报听
-     canPublic: boolean,
+    canPublic: boolean,
 }
 
 interface RoomTableDTO {
@@ -39,24 +39,28 @@ interface PlayerDTO {
     points: number,
 }
 
-interface RoomBasicDTO{
-     roomId: string,
-     roomName: string,
-     master: UserDTO,
-     createTime: number,
-     roomMode: RoomMode,
+interface RoomBasicDTO {
+    roomId: string,
+    roomName: string,
+    master: UserDTO,
+    createTime: number,
+    roomMode: RoomMode,
 }
 
-enum  RoomMode {
+enum RoomMode {
     GAME = 'GAME',
     CHAT = 'CHAT',
 }
 
-enum  RoomPublic {
+enum RoomPublic {
     PRIVATE = 'PRIVATE',
     PUBLIC = 'PUBLIC',
 }
 
 export type {
-    RoomInfoResponse
+    RoomInfoResponse, RoomConfigDTO, RoomTableDTO, PlayerDTO, RoomBasicDTO
+}
+
+export {
+    RoomMode, RoomPublic,
 }

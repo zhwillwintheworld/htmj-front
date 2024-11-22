@@ -1,7 +1,8 @@
-import {LoginRequest, RegisterRequest} from "../domain/param/UserParam.ts";
+import {LoginRequest, QueryUserRoomStatusRequest, RegisterRequest} from "../domain/param/UserParam.ts";
 import {message} from "antd";
 import {UserLoginResponse} from "../domain/Response/UserResponse.ts";
 import {ApiError, HttpError} from "../domain/Error.ts";
+import {RoomInfoResponse} from "../domain/Response/RoomInfoResponse.ts";
 
 export const WEB_URL = 'http://localhost:4751'
 export const WS_URL = 'ws://localhost:8082'
@@ -10,7 +11,8 @@ export const WS_URL = 'ws://localhost:8082'
 export const WEB_CONFIG = {
     "login": "/user/login",
     "register": "/user/register",
-    "upload": "/file/upload"
+    "upload": "/file/upload",
+    "getRoomInfo": "/room/queryStatus",
 }
 
 
@@ -54,4 +56,15 @@ export const API_REGISTER = async (request: RegisterRequest): Promise<UserLoginR
         body: JSON.stringify(request),
     })
 }
+
+export const API_ROOM_INFO = async (request: QueryUserRoomStatusRequest): Promise<RoomInfoResponse> => {
+    return customFetch<RoomInfoResponse>(WEB_URL + WEB_CONFIG.getRoomInfo, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(request),
+    })
+}
+
 

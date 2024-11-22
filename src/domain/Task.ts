@@ -1,4 +1,5 @@
 import {SupplierType, Table} from "./Table.ts";
+import {RoomBasicDTO, RoomConfigDTO, RoomTableDTO} from "./Response/RoomInfoResponse.ts";
 
 interface ClientRequest {
     traceId: string;
@@ -34,6 +35,7 @@ interface ClientMessage {
 enum ServerMessageType {
     TEXT = 'TEXT',
     MAHJONG = 'MAHJONG',
+    EVENT = 'EVENT'
 }
 
 interface MahjongMessage {
@@ -46,6 +48,39 @@ interface MahjongMessage {
 
 interface TextMessage {
     text: string
+}
+
+interface EventMessage {
+    event: EventType,
+    content: RoomUserMessage | RoomChangePositionMessage | RoomInitMessage
+}
+
+enum EventType {
+    SELF_JOIN_ROOM = 'SELF_JOIN_ROOM',
+    OTHER_JOIN_ROOM = 'OTHER_JOIN_ROOM',
+    LEAVE_ROOM = 'LEAVE_ROOM',
+    CHANGE_POSITION = 'CHANGE_POSITION',
+}
+
+interface RoomInitMessage {
+    onRoom: boolean,
+    roomBasic: RoomBasicDTO | null,
+    roomConfig: RoomConfigDTO | null,
+    roomTable: RoomTableDTO | null,
+    roomMember: Array<UserDTO>|null
+}
+
+interface RoomUserMessage {
+    user: UserDTO,
+    time: number,
+    position: Position | null,
+}
+
+interface RoomChangePositionMessage {
+    user: UserDTO,
+    time: number,
+    position: Position,
+    targetPosition: Position,
 }
 
 enum MahjongMessageType {
@@ -265,7 +300,7 @@ enum UserType {
 export {
     ServerMessageType, MahjongMessageType,
     MahjongMessageEvent, Position, UserType,
-    PLATFORM, CommunicateType, LeaseStatus, Color, EndWay, HuType
+    PLATFORM, CommunicateType, LeaseStatus, Color, EndWay, HuType, EventType
 };
 export type {
     ClientRequest,
@@ -273,7 +308,7 @@ export type {
     InitSeatDTO, UserDTO, TextMessage, MahjongOutResponseMessage, Mahjong,
     MahjongInitResponseMessage, MahjongChangeResponseMessage, MahjongErrorResponseMessage,
     MahjongSendLeaseResponseMessage, MahjongLeaseResponseMessage, MahjongEndResponseMessage,
-    MahjongOutRequestMessage, EndDetail
+    MahjongOutRequestMessage, EndDetail, EventMessage, RoomUserMessage, RoomChangePositionMessage,RoomInitMessage
 };
 
 

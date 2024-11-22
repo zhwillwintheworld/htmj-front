@@ -1,6 +1,5 @@
-
-import type { FormProps } from 'antd';
-import { Button, Form, Input } from 'antd';
+import type {FormProps} from 'antd';
+import {Button, Form, Input} from 'antd';
 
 type FieldType = {
     roomName?: string;
@@ -21,7 +20,13 @@ function CreateRoom() {
 
     return (
         <>
-            <div>
+             <div style={{
+                width: '100%',
+                height: '80vh',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}>
                 <Form
                     name="basic"
                     labelCol={{ span: 8 }}
