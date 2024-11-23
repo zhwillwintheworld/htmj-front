@@ -1,5 +1,5 @@
 import {ReactNode, useReducer} from "react";
-import {table, TableChangeContext, TableContext, tableReducer} from "../../config/TableContext.ts";
+import {TableChangeContext, TableContext, tableReducer} from "../../config/TableContext.ts";
 
 // Provider 组件
 interface TableProviderProps {
@@ -7,7 +7,7 @@ interface TableProviderProps {
 }
 
 export const TableProvider = ({children}: TableProviderProps) => {
-    const [tasks, dispatch] = useReducer(tableReducer, table);
+    const [tasks, dispatch] = useReducer(tableReducer, null);
 
     return (
         <TableContext.Provider value={tasks}>

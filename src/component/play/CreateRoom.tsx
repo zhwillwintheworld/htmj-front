@@ -1,26 +1,41 @@
 import type {FormProps} from 'antd';
 import {Button, Form, Input} from 'antd';
+import {CreateRoomRequest} from "../../domain/param/RoomParam.ts";
+import {API_CREATE_ROOM} from "../../config/RequestConfig.ts";
+import {RoomMode, RoomPublic} from "../../domain/Response/RoomInfoResponse.ts";
+import {useContext} from "react";
+import {UserContext} from "../../config/UserContext.ts";
+import {Platform} from "../../domain/Common.ts";
 
-type FieldType = {
-    roomName?: string;
-    password?: string;
-    isOpen?: string;
-};
-
-const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-    console.log('Success:', values);
-};
-
-const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-};
 
 function CreateRoom() {
+    const user = useContext(UserContext)
+    const onFinish: FormProps<CreateRoomRequest>['onFinish'] = (values) => {
+    values.roomConfig = {
+        bigBigWinConfig: true,
+        canFireWinner: true,
+        canPublic: true,
+        completeWinnerConfig: true,
+        fireWinnerConfig: 1,
+        limit: 4,
+        password: values.password,
+        isPublic: values.isPublic ? RoomPublic.PUBLIC : RoomPublic.PRIVATE
+    }
+    values.userCode = user!.userCode
+    values.roomMode = RoomMode.GAME
+    values.platform = Platform.WEB
+    values.app = 'mahjong'
+    API_CREATE_ROOM(values).then(r => {
+        console.log(r);
+    })
+};
 
-
+const onFinishFailed: FormProps<CreateRoomRequest>['onFinishFailed'] = (errorInfo) => {
+    console.log('Failed:', errorInfo);
+};
     return (
         <>
-             <div style={{
+            <div style={{
                 width: '100%',
                 height: '80vh',
                 display: 'flex',
@@ -29,37 +44,38 @@ function CreateRoom() {
             }}>
                 <Form
                     name="basic"
-                    labelCol={{ span: 8 }}
-                    wrapperCol={{ span: 16 }}
-                    style={{ maxWidth: 600 }}
-                    initialValues={{ remember: true }}
+                    labelCol={{span: 8}}
+                    wrapperCol={{span: 16}}
+                    style={{maxWidth: 600}}
+                    initialValues={{remember: true}}
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
                     autoComplete="off"
                 >
-                    <Form.Item<FieldType>
-                        label= "房间名"
+                    <Form.Item<CreateRoomRequest>
+                        label="房间名"
                         name="roomName"
-                        rules={[{ required: true, message: '房间名不能为空!' }]}
+                        rules={[{required: true, message: '房间名不能为空!'}]}
                     >
-                        <Input />
+                        <Input/>
                     </Form.Item>
 
-                    <Form.Item<FieldType>
+                    <Form.Item<CreateRoomRequest>
                         label="密码"
                         name="password"
+                        rules={[{required: true, message: '密码不能为空!'}]}
                     >
-                        <Input.Password />
+                        <Input.Password/>
                     </Form.Item>
 
-                    <Form.Item<FieldType>
+                    <Form.Item<CreateRoomRequest>
                         label="是否公开"
-                        name="isOpen"
+                        name="isPublic"
                     >
-                        <Input />
+                        <Input/>
                     </Form.Item>
 
-                    <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                    <Form.Item wrapperCol={{offset: 8, span: 16}}>
                         <Button type="primary" htmlType="submit">
                             创建房间
                         </Button>

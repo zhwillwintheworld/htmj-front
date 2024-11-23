@@ -6,6 +6,8 @@ import RoomContent from "./RoomContent.tsx";
 function Room() {
     const tableContext = useContext(TableContext);
     const tableFlag = tableContext != null && tableContext.table != null
+    console.log('tableFlag', tableFlag)
+    console.log('tableContext', tableContext)
     return (
         <>
             <div>

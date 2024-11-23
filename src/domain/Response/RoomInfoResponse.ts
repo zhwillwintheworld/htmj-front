@@ -12,7 +12,7 @@ interface RoomConfigDTO {
     // 是否公开
     isPublic: RoomPublic,
     // 进房间的密码
-    password: string,
+    password: string | null,
     // 限制进入的人数
     limit: number,
     // 能否能烧庄

@@ -3,6 +3,7 @@ import {message} from "antd";
 import {UserLoginResponse} from "../domain/Response/UserResponse.ts";
 import {ApiError, HttpError} from "../domain/Error.ts";
 import {RoomInfoResponse} from "../domain/Response/RoomInfoResponse.ts";
+import {CreateRoomRequest, EnterRoomRequest} from "../domain/param/RoomParam.ts";
 
 export const WEB_URL = 'http://localhost:4751'
 export const WS_URL = 'ws://localhost:8082'
@@ -13,6 +14,8 @@ export const WEB_CONFIG = {
     "register": "/user/register",
     "upload": "/file/upload",
     "getRoomInfo": "/room/queryStatus",
+    "createRoom":"/room/create",
+    "enterRoom":"/room/enter",
 }
 
 
@@ -59,6 +62,26 @@ export const API_REGISTER = async (request: RegisterRequest): Promise<UserLoginR
 
 export const API_ROOM_INFO = async (request: QueryUserRoomStatusRequest): Promise<RoomInfoResponse> => {
     return customFetch<RoomInfoResponse>(WEB_URL + WEB_CONFIG.getRoomInfo, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(request),
+    })
+}
+
+export const API_CREATE_ROOM = async (request: CreateRoomRequest): Promise<void> => {
+    return customFetch<void>(WEB_URL + WEB_CONFIG.createRoom, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(request),
+    })
+}
+
+export const API_ENTER_ROOM = async (request: EnterRoomRequest): Promise<void> => {
+    return customFetch<void>(WEB_URL + WEB_CONFIG.enterRoom, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
