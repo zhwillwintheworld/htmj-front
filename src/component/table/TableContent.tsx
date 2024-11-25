@@ -2,10 +2,10 @@ import './table.css'
 import UserSeat from "./UserSeat.tsx";
 import {CenterProps, Seat, SeatProps, Table} from "../../domain/Table.ts";
 import {Position} from "../../domain/Task.ts";
-import {useLocation} from "react-router-dom";
 import {useContext} from "react";
 import {TableContext} from "../../config/TableContext.ts";
 import TableCenter from "./TableCenter.tsx";
+import {UserContext} from "../../config/UserContext.ts";
 
 const getNextSeat = (table: Table, position: Position): Seat => {
     switch (position) {
@@ -23,14 +23,13 @@ const getNextSeat = (table: Table, position: Position): Seat => {
 }
 
 function TableContent() {
-    const location = useLocation();
     const tableProps = useContext(TableContext);
+    const user = useContext(UserContext)
     if (tableProps == null) {
         console.log('tableProps is null')
         return <div>加载中...</div>
     }
-    const queryParams = new URLSearchParams(location.search);
-    const userCode = queryParams.get('userCode');
+    const userCode = user?.userCode;
     if (userCode == null) {
         return <div>加载中...</div>
     }

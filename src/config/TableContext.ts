@@ -29,7 +29,8 @@ type Action = { type: 'INIT'; payload: MahjongInitResponseMessage, userCode: str
     { type: 'OUT'; payload: MahjongOutResponseMessage } |
     { type: 'LEASE'; payload: MahjongLeaseResponseMessage } |
     { type: 'SEND_LEASE'; payload: MahjongSendLeaseResponseMessage } |
-    { type: 'ERROR'; payload: MahjongErrorResponseMessage, userCode: string };
+    { type: 'ERROR'; payload: MahjongErrorResponseMessage, userCode: string } |
+    { type: 'CLEAR'; payload: null }
 
 export function tableReducer(tableProps: TableProps | null, action: Action): TableProps | null {
     switch (action.type) {
@@ -46,6 +47,8 @@ export function tableReducer(tableProps: TableProps | null, action: Action): Tab
             return sendLeaseTableProp(tableProps!, action.payload)
         case "END":
             return endTableProp(tableProps!, action.payload)
+        case "CLEAR":
+            return null
         default:
             throw new Error(`Unhandled action type: ${action.type}`);
     }

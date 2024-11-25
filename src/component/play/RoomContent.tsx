@@ -55,7 +55,7 @@ function RoomContent() {
                     </div>
                     <div>
                         {isManage ? <Button onClick={startGame} color="primary" variant="solid" >开始游戏</Button> : <></>}
-                        <Button onClick={onclick} color="primary" variant="solid">退出房间</Button>
+                        <Button onClick={onclick} color="primary" variant="solid" style={{marginLeft: '10px'}}>退出房间</Button>
                     </div>
                 </div>
                 <Divider/>
