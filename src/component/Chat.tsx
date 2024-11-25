@@ -62,10 +62,10 @@ function Chat() {
 
     const processMessage = useCallback((payload: Payload<Buffer, Buffer>) => {
         const message = JSON.parse(payload.data?.toString() as string);
+        console.log("收到服务端消息", message)
         if (message.message != null && message.message.type == ServerMessageType.MAHJONG && userCode !== null && userCode != '') {
             const messageContent = message.message.content as MahjongMessage;
             let body
-            console.log(message)
             switch (messageContent.event) {
                 // 解决初始化
                 case MahjongMessageEvent.INIT_RESPONSE:

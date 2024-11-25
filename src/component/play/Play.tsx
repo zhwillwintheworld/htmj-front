@@ -9,15 +9,16 @@ function Play() {
     const user = useContext(UserContext)
     const room = useContext(RoomContext)
     const [isVisible, setIsVisible] = useState(room?.onRoom != null && room.onRoom)
-    const [isLogin,setIsLogin] = useState(user != null && user.userCode!= null)
+    const [isLogin, setIsLogin] = useState(user != null && user.userCode != null)
     useEffect(() => {
-        setIsVisible(room?.onRoom != null && room.onRoom)
-        setIsLogin(user != null && user.userCode!= null)
+        console.log("room 发生变化",room)
+        setIsVisible(room != null && room!.onRoom != null && room.onRoom)
+        setIsLogin(user != null && user.userCode != null)
     }, [room, user]);
     return (
         <>
             <div>
-                {isLogin? isVisible ? <Room/> : <EnterRoom/> : <UnLogin/>}
+                {isLogin ? isVisible ? <Room/> : <EnterRoom/> : <UnLogin/>}
             </div>
         </>
     )

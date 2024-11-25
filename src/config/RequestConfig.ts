@@ -3,10 +3,16 @@ import {message} from "antd";
 import {UserLoginResponse} from "../domain/Response/UserResponse.ts";
 import {ApiError, HttpError} from "../domain/Error.ts";
 import {RoomInfoResponse} from "../domain/Response/RoomInfoResponse.ts";
-import {CreateRoomRequest, EnterRoomRequest} from "../domain/param/RoomParam.ts";
+import {
+    ChangePositionRequest,
+    CreateRoomRequest,
+    EnterRoomRequest,
+    ExitRoomRequest,
+    StartMahjongRequest
+} from "../domain/param/RoomParam.ts";
 
-export const WEB_URL = 'http://localhost:4751'
-export const WS_URL = 'ws://localhost:8082'
+export const WEB_URL = 'http://172.18.4.19:4751'
+export const WS_URL = 'ws://172.18.4.19:8082'
 
 
 export const WEB_CONFIG = {
@@ -16,6 +22,9 @@ export const WEB_CONFIG = {
     "getRoomInfo": "/room/queryStatus",
     "createRoom":"/room/create",
     "enterRoom":"/room/enter",
+    "exitRoom":"/room/exit",
+    "changePosition":"/room/changePosition",
+    "startGame":"/room/start",
 }
 
 
@@ -82,6 +91,36 @@ export const API_CREATE_ROOM = async (request: CreateRoomRequest): Promise<void>
 
 export const API_ENTER_ROOM = async (request: EnterRoomRequest): Promise<void> => {
     return customFetch<void>(WEB_URL + WEB_CONFIG.enterRoom, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(request),
+    })
+}
+
+export const API_EXIT_ROOM = async (request: ExitRoomRequest): Promise<void> => {
+    return customFetch<void>(WEB_URL + WEB_CONFIG.exitRoom, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(request),
+    })
+}
+
+export const API_CHANGE_POSITION = async (request: ChangePositionRequest): Promise<void> => {
+    return customFetch<void>(WEB_URL + WEB_CONFIG.changePosition, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(request),
+    })
+}
+
+export const API_START_GAME = async (request: StartMahjongRequest): Promise<void> => {
+    return customFetch<void>(WEB_URL + WEB_CONFIG.startGame, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

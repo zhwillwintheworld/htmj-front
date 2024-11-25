@@ -1,5 +1,6 @@
 import {RoomConfigDTO, RoomMode} from "../Response/RoomInfoResponse.ts";
 import {Platform} from "../Common.ts";
+import {Position} from "../Task.ts";
 
 interface CreateRoomRequest {
     userCode: string,
@@ -18,7 +19,26 @@ interface EnterRoomRequest{
      password: string|null
 }
 
+interface ExitRoomRequest{
+     userCode: string,
+     roomId: string,
+}
+
+interface ChangePositionRequest {
+    userCode: string,
+    roomId: string,
+    position: Position
+}
+
+interface StartMahjongRequest {
+    roomId: string,
+    userCode: string
+}
+
 export type{
     CreateRoomRequest,
-    EnterRoomRequest
+    EnterRoomRequest,
+    ExitRoomRequest,
+    ChangePositionRequest,
+    StartMahjongRequest
 }

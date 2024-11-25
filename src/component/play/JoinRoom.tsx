@@ -1,19 +1,23 @@
 import type {FormProps} from 'antd';
 import {Button, Form, Input} from 'antd';
 import {EnterRoomRequest} from "../../domain/param/RoomParam.ts";
+import {useContext} from "react";
+import {UserContext} from "../../config/UserContext.ts";
+import {API_ENTER_ROOM} from "../../config/RequestConfig.ts";
 
-
-const onFinish: FormProps<EnterRoomRequest>['onFinish'] = (values) => {
-    console.log('Success:', values);
-};
-
-const onFinishFailed: FormProps<EnterRoomRequest>['onFinishFailed'] = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-};
 
 function JoinRoom() {
+    const user = useContext(UserContext)
+    const onFinish: FormProps<EnterRoomRequest>['onFinish'] = (values) => {
+        values.userCode = user!.userCode
+        API_ENTER_ROOM(values).then(r => {
+            console.log("加入房间",r)
+        })
+    };
 
-
+    const onFinishFailed: FormProps<EnterRoomRequest>['onFinishFailed'] = (errorInfo) => {
+        console.log('Failed:', errorInfo);
+    };
     return (
         <>
             <div style={{

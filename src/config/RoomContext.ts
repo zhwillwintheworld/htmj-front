@@ -11,7 +11,7 @@ type Action = { type: 'SET'; payload: RoomInfoResponse }
     | { type: 'RESET', payload: null }
     | { type: 'SELF_JOIN_ROOM', payload: RoomInitMessage }
     | { type: 'OTHER_JOIN_ROOM', payload: RoomUserMessage }
-    | { type: 'LEAVE_ROOM', payload: RoomUserMessage }
+    | { type: 'LEAVE_ROOM', payload: RoomUserMessage | null}
     | { type: 'CHANGE_POSITION', payload: RoomChangePositionMessage }
     ;
 
@@ -49,6 +49,7 @@ export function roomReducer(message: RoomInfoResponse | null, action: Action) {
         return newMessage;
     } else if (action.type === 'LEAVE_ROOM' && action.payload != null) {
         if (action.payload.user.userCode === localStorage.getItem("userCode")) {
+            console.log("用户退出房间")
             return null
         } else {
             const newMessage = {...message!};
@@ -81,11 +82,11 @@ export function roomReducer(message: RoomInfoResponse | null, action: Action) {
         }
         if (action!.payload.targetPosition == Position.EAST) {
             newMessage.roomTable!.east = user
-        } else if (action!.payload.position == Position.NORTH) {
+        } else if (action!.payload.targetPosition == Position.NORTH) {
             newMessage.roomTable!.north = user
-        } else if (action!.payload.position == Position.SOUTH) {
+        } else if (action!.payload.targetPosition == Position.SOUTH) {
             newMessage.roomTable!.south = user
-        } else if (action!.payload.position == Position.WEST) {
+        } else if (action!.payload.targetPosition == Position.WEST) {
             newMessage.roomTable!.west = user
         }
         return newMessage;
