@@ -15,12 +15,7 @@ interface RegisterRequest {
     birthday: string | null,
 }
 
-interface QueryUserRoomStatusRequest {
-    userCode: string,
-    platform: string,
-    app: string,
-}
 
 export type {
-    LoginRequest, RegisterRequest, QueryUserRoomStatusRequest
+    LoginRequest, RegisterRequest
 }

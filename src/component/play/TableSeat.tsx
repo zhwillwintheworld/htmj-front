@@ -26,7 +26,6 @@ function TableSeat({props}: { props: SeatProps }) {
             return;
         }
         API_CHANGE_POSITION({
-            userCode: current!.userCode,
             roomId: props.roomId,
             position: props.position,
         }).then(r => {

@@ -3,13 +3,10 @@ import {Button, Form, Input} from 'antd';
 import {CreateRoomRequest} from "../../domain/param/RoomParam.ts";
 import {API_CREATE_ROOM} from "../../config/RequestConfig.ts";
 import {RoomMode, RoomPublic} from "../../domain/Response/RoomInfoResponse.ts";
-import {useContext} from "react";
-import {UserContext} from "../../config/UserContext.ts";
 import {Platform} from "../../domain/Common.ts";
 
 
 function CreateRoom() {
-    const user = useContext(UserContext)
     const onFinish: FormProps<CreateRoomRequest>['onFinish'] = (values) => {
     values.roomConfig = {
         bigBigWinConfig: true,
@@ -21,7 +18,6 @@ function CreateRoom() {
         password: values.password,
         isPublic: values.isPublic ? RoomPublic.PUBLIC : RoomPublic.PRIVATE
     }
-    values.userCode = user!.userCode
     values.roomMode = RoomMode.GAME
     values.platform = Platform.WEB
     values.app = 'mahjong'

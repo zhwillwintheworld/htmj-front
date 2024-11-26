@@ -3,7 +3,6 @@ import {Platform} from "../Common.ts";
 import {Position} from "../Task.ts";
 
 interface CreateRoomRequest {
-    userCode: string,
     platform: Platform,
     app: string,
     roomName: string,
@@ -14,25 +13,21 @@ interface CreateRoomRequest {
 }
 
 interface EnterRoomRequest{
-     userCode: string,
      roomId: string,
      password: string|null
 }
 
 interface ExitRoomRequest{
-     userCode: string,
      roomId: string,
 }
 
 interface ChangePositionRequest {
-    userCode: string,
     roomId: string,
     position: Position
 }
 
 interface StartMahjongRequest {
     roomId: string,
-    userCode: string
 }
 
 export type{

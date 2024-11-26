@@ -11,7 +11,6 @@ function RoomContent() {
     const user = useContext(UserContext)
     const onclick = () => {
         API_EXIT_ROOM({
-            userCode: user!.userCode,
             roomId: room!.roomBasic!.roomId,
         }).then(r => {
             console.log("退出房间", r)
@@ -27,7 +26,6 @@ function RoomContent() {
         }
         API_START_GAME({
             roomId: room!.roomBasic!.roomId,
-            userCode: user!.userCode,
         }).then(r => {
             console.log("开始游戏", r)
         })

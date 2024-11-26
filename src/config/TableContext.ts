@@ -33,24 +33,30 @@ type Action = { type: 'INIT'; payload: MahjongInitResponseMessage, userCode: str
     { type: 'CLEAR'; payload: null }
 
 export function tableReducer(tableProps: TableProps | null, action: Action): TableProps | null {
-    switch (action.type) {
-        // 重新初始化
-        case 'INIT':
-            return initTableProp(action.payload, action.userCode);
-        case 'CHANGE':
-            return changeTableProp(tableProps!, action.payload, action.userCode)
-        case "OUT":
-            return outTableProp(tableProps!, action.payload)
-        case "LEASE":
-            return leaseTableProp(tableProps!, action.payload)
-        case 'SEND_LEASE':
-            return sendLeaseTableProp(tableProps!, action.payload)
-        case "END":
-            return endTableProp(tableProps!, action.payload)
-        case "CLEAR":
-            return null
-        default:
-            throw new Error(`Unhandled action type: ${action.type}`);
+    if (tableProps == null && action.type != 'INIT') {
+        console.log("未收到init时 及时收到其他消息也不处理")
+        return null
+    } else {
+        switch (action.type) {
+            // 重新初始化
+            case 'INIT':
+                console.log("开始初始化消息")
+                return initTableProp(action.payload, action.userCode);
+            case 'CHANGE':
+                return changeTableProp(tableProps!, action.payload, action.userCode)
+            case "OUT":
+                return outTableProp(tableProps!, action.payload)
+            case "LEASE":
+                return leaseTableProp(tableProps!, action.payload)
+            case 'SEND_LEASE':
+                return sendLeaseTableProp(tableProps!, action.payload)
+            case "END":
+                return endTableProp(tableProps!, action.payload)
+            case "CLEAR":
+                return null
+            default:
+                throw new Error(`Unhandled action type: ${action.type}`);
+        }
     }
 }
 
