@@ -12,8 +12,8 @@ import {
 } from "../domain/param/RoomParam.ts";
 
 
-export const WEB_URL = 'http://localhost:4751'
-export const WS_URL = 'ws://localhost:8082'
+export const WEB_URL = import.meta.env.VITE_WEB_URL
+export const WS_URL = import.meta.env.VITE_WS_URL
 
 
 export const WEB_CONFIG = {
