@@ -1,11 +1,12 @@
 import {Button, DatePicker, Form, FormProps, Input} from "antd";
 import {RegisterRequest} from "../../domain/param/UserParam.ts";
-import {API_REGISTER} from "../../config/RequestConfig.ts";
+import {API_REGISTER, API_ROOM_INFO, API_TABLE_INFO} from "../../config/RequestConfig.ts";
 import UploadForSingleImage from "../util/UploadForSingleImage.tsx";
 import {useContext, useState} from "react";
 import dayjs from 'dayjs'
 import {useNavigate} from "react-router-dom";
 import {UserChangeContext} from "../../config/UserContext.ts";
+import {RoomChangeContext} from "../../config/RoomContext.ts";
 
 
 const onFinishFailed: FormProps<RegisterRequest>['onFinishFailed'] = (errorInfo) => {
@@ -17,6 +18,7 @@ function Register() {
     const [form] = Form.useForm()
     const [avatar, setAvatar] = useState('')
     const userDispatch = useContext(UserChangeContext)!
+    const roomDispatch = useContext(RoomChangeContext)!
     const getAvatar = (avatar: string) => {
         setAvatar(avatar)
         form.setFieldValue('avatar', avatar)
@@ -37,6 +39,19 @@ function Register() {
                     userCode: res.userCode,
                     userType: res.userType
                 }
+            })
+            // 查询用户是否在房间内
+            API_ROOM_INFO().then(res => {
+                if (res != null && res.onRoom) {
+                    roomDispatch({
+                        type: 'SET',
+                        payload: res
+                    })
+                }
+            })
+            // 查询用户是否在游戏内
+            API_TABLE_INFO().then(res => {
+                console.log("尝试连接房间", res)
             })
             navigate("/")
         })

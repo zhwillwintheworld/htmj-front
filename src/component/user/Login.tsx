@@ -1,9 +1,10 @@
 import {Button, Form, FormProps, Input} from "antd";
 import {LoginRequest} from "../../domain/param/UserParam.ts";
-import {API_LOGIN} from "../../config/RequestConfig.ts";
+import {API_LOGIN, API_ROOM_INFO, API_TABLE_INFO} from "../../config/RequestConfig.ts";
 import {useNavigate} from "react-router-dom";
 import {useContext} from "react";
 import {UserChangeContext} from "../../config/UserContext.ts";
+import {RoomChangeContext} from "../../config/RoomContext.ts";
 
 const onFinishFailed: FormProps<LoginRequest>['onFinishFailed'] = (errorInfo) => {
     console.log('Failed:', errorInfo);
@@ -12,6 +13,7 @@ const onFinishFailed: FormProps<LoginRequest>['onFinishFailed'] = (errorInfo) =>
 function Login() {
     const navigate = useNavigate();
     const userDispatch = useContext(UserChangeContext)!
+    const roomDispatch = useContext(RoomChangeContext)!
     const onFinish: FormProps<LoginRequest>['onFinish'] = (values) => {
         values.platform = 'WEB'
         values.app = 'mahjong'
@@ -25,6 +27,19 @@ function Login() {
                     userCode: res.userCode,
                     userType: res.userType
                 }
+            })
+            // 查询用户是否在房间内
+            API_ROOM_INFO().then(res => {
+                if (res != null && res.onRoom) {
+                    roomDispatch({
+                        type: 'SET',
+                        payload: res
+                    })
+                }
+            })
+            // 查询用户是否在游戏内
+            API_TABLE_INFO().then(res => {
+                console.log("尝试连接房间", res)
             })
             navigate("/")
         })
